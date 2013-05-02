@@ -30,24 +30,20 @@ define(["box2D"],function(box2D)
     this.box2dElem.GetBody().SetUserData("player");
     this.body2d = this.box2dElem.GetBody();
     
-    this.w = w;
-    this.h = h;
-    this.halfW = this.w * SCALE ;
-    this.halfH = this.h * SCALE ;
-    
+    this.w = w * SCALE;
+    this.h = h * SCALE;
+    var offsetX = this.offsetX = 100;
     this.updateCamera = function()
     {
-      this.x = this.body2d.GetPosition().x;
+      this.x = (this.body2d.GetPosition().x - w ) * SCALE; //multiplicated by 4 for the position AND the offsetX
     }
     
     this.draw = function(ctx)
     {
         var body = this.box2dElem.GetBody();
         ctx.fillStyle = "#000";
-      
-        ctx.fillRect((body.GetPosition().x * SCALE) - this.halfW, (body.GetPosition().y * SCALE) - this.halfH, this.w * SCALE * 2, this.h * SCALE * 2);
-        ctx.fillRect(world.canvas.width / 2,world.canvas.height/2, 18,18);
-        
+         ctx.fillStyle = "#FF0000";
+        ctx.fillRect(offsetX, (body.GetPosition().y * SCALE) - this.h , this.w * 2 , this.h * 2);
     }
     
   }

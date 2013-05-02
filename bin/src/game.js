@@ -105,7 +105,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
         //connect the centers - center in local coordinate - relative to body is 0,0
         joint_def.localAnchorA = length;
         joint_def.localAnchorB = new b2Vec2(0,0);
-        joint_def.maxMotorTorque = 0.5;
+        joint_def.maxMotorTorque = 1;
         joint_def.enableMotor = true;
         return world.CreateJoint(joint_def);
   
@@ -161,7 +161,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
           _eventBus = eventBus;
           
           world = new b2World(
-              new b2Vec2(0,10) //gravity
+              new b2Vec2(1,9.5) //gravity
           ,true //allow sleep
           );
           
@@ -170,10 +170,10 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
           world.SetContactListener(listener);
      
 
-          floor = new Elem(world,  SCALE, 10, canvas.height, 500, 1)
+          floor = new Elem(world,  SCALE, (this.canvas.width * 0.5) / SCALE, this.canvas.height / SCALE - 2, (this.canvas.width * 0.3) / SCALE, 1)
 
           //create PLAYER
-          player = new Player(world,SCALE, 0.5, 0.5);
+          player = new Player(world,SCALE, 1, 0.5);
           
           var debugDraw = new b2DebugDraw();
           debugDraw.SetSprite(ctx);
@@ -203,6 +203,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
 
     function render()
     {
+      //ctx.clearRect(0, 0, canvas.width , canvas.height )
+      ctx.globalAlpha = 0.5;
       player.draw(ctx);
       floor.draw(ctx, player)
     }
@@ -217,7 +219,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
       world.DrawDebugData();
       world.ClearForces();
       stats.update();
-       player.body2d.ApplyImpulse(new b2Vec2( 0.0001, 0), player.body2d.GetWorldCenter())
+      
+      player.updateCamera();
+      //player.body2d.ApplyImpulse(new b2Vec2( 0.0001, 0), player.body2d.GetWorldCenter())
       /*
       if (lastTime + 1500 < time )
       {
