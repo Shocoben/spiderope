@@ -2,12 +2,14 @@ require.config(
 {
     baseUrl: "./bin/src/"
     ,paths: {
+        
         'box2D' : '../libs/box2d.min'
+        ,"guiPath" : "../libs/gui"
+        ,"gui" : "../libs/gui/gui"
         ,'stats' : '../libs/stats' 
         ,"fpsFrame" : '../libs/fpsFrame'
         ,"addUpdateCapabilites" : '../libs/addUpdateCapabilites'
         ,"gameLoop" : "../libs/gameLoop"
-        ,"imagesManager" : "../libs/imagesManager"
         ,"canvas" : "../libs/canvas"
         ,"canvasParams" : "../setup/canvasParams"
         ,"canvasResizer" : "../libs/canvasResizer"
@@ -15,6 +17,9 @@ require.config(
         ,'eventBus' : "../libs/eventBus"
         ,"mouseCoords" : "../libs/mouseCoords"
         ,"addMouseEvents" : "../libs/addMouseEvents"
+        ,"collisionPointAABB" : "../libs/collisionPointAABB"
+        ,"ImagesManager" : "../libs/imagesmanager"
+        ,"gameimages" : "../setup/gameimages"
     }
     ,shim: {
         'box2D': {
@@ -28,26 +33,26 @@ require.config(
 } );
 
 
-require(["box2D","stats", "gameLoop", "game", "canvas", "canvasParams", "eventBus", "mouseCoords"], 
-function(Box2D, Stats, gameLoop, game, Canvas, canvasParams, eventBus, mouseCoords)
+require(["box2D","stats", "gameLoop","Game", "menu", "canvas", "canvasParams", "eventBus", "mouseCoords", "ImagesManager", "gameimages", "hub"], 
+function(Box2D, Stats, gameLoop, game, menu, Canvas, canvasParams, eventBus, mouseCoords, ImagesManager, gameimages, hub)
 {
     var canvas = new Canvas(document.body, canvasParams);
-    canvas.associate(game);
-
 
     mouseCoords.connectToCanvas(canvas.getDOM());
     mouseCoords.connectToEventBus(eventBus);
-    /*
+    
     var imagesManager = new ImagesManager({"SD" : "images"});
     imagesManager.pushImages(gameimages);
-    */
-
-    gameLoop.addUpdate("game", game);
-
+    
     gameLoop.connectToEventBus(eventBus);
     gameLoop.init();
     
-    game.createWorld(eventBus);
+    
+    hub.add("menu", menu);
+    hub.add("game", game);
+    hub.setup(eventBus, imagesManager, gameLoop, canvas);
+
+    hub.launch("menu");
     //menu.init(eventBus, imagesManager, gamePad, game);
 
     

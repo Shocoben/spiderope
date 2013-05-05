@@ -1,10 +1,14 @@
-define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, stats, MathUtils, Player, Elem){
+define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], function(Box2D, stats, MathUtils, Player, Elem, Building){
   
   var Game = new function()
   {
       var world;
       var player;
       var myBodies;
+      var SCALE = 15;
+      var buildings = [];
+      var lastBuildingPos = 0;
+
       var b2Vec2 = Box2D.Common.Math.b2Vec2
           , b2BodyDef = Box2D.Dynamics.b2BodyDef
           , b2Body = Box2D.Dynamics.b2Body
@@ -25,7 +29,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
       //Add listeners for contact
       var listener = new b2Listener;
       var pointer = this;
-      var SCALE = 15;
+
       listener.BeginContact = function(contact)
       {
         if ((contact.GetFixtureA().GetBody().GetUserData() == "floor")
@@ -34,7 +38,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
             && (contact.GetFixtureB().GetBody().GetUserData() == "floor")
         )
         {
-     
+          console.log("gameOver");
         }
       }
 
@@ -56,12 +60,11 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
     var _eventBus;
     var cJoint = null;
  
-    
     this.createPoint = function(position, fixed)
     {
         var fixDef = new b2FixtureDef;
-        fixDef.density = 3;
-        fixDef.friction = 1;
+        fixDef.density = 0.3;
+        fixDef.friction = 10;
         fixDef.restitution = 1;
         //create fixedPoint
         
@@ -86,14 +89,21 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
     
     var cJointsCreated = [];
     var cFixedPointsCreated = [];
-   
+    
     this.deleteRope = function()
     {
+      for (var i = 0; i < cJointsCreated.length; i++)
+      {
+        if (cJointsCreated[i])
+          world.DestroyJoint(cJointsCreated[i]);
+      }
       for (var i = 0; i < cFixedPointsCreated.length; i++)
       {
         if (cFixedPointsCreated[i])
           world.DestroyBody(cFixedPointsCreated[i].GetBody());
       }
+      cFixedPointsCreated = [];
+      cJointsCreated = [];
     }
    
     this.createJoint = function(from, to, length)
@@ -103,10 +113,14 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
         joint_def.bodyB = to;
              
         //connect the centers - center in local coordinate - relative to body is 0,0
-        joint_def.localAnchorA = length;
-        joint_def.localAnchorB = new b2Vec2(0,0);
+        joint_def.localAnchorA = new b2Vec2( length.x * 0.9, length.y);
+        joint_def.localAnchorB =   new b2Vec2(0, 0);
+        
+        /*
         joint_def.maxMotorTorque = 1;
         joint_def.enableMotor = true;
+        
+        */
         return world.CreateJoint(joint_def);
   
     }
@@ -117,19 +131,18 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
       
       this.deleteRope();
       
-      //player.body2d.SetAngle(MathUtils.degreeToRad(90));
-      var playerPos = player.body2d.GetPosition();
+      //player.b2Body.SetAngle(MathUtils.degreeToRad(90));
+      var playerPos = player.b2Body.GetPosition();
       var vectorSous = new MathUtils.Vector2(destination.x - playerPos.x, destination.y - playerPos.y);
       var vectorToFollow = vectorSous.normalize();
       var cJointPos = new MathUtils.Vector2(playerPos.x, playerPos.y);
       var lastJoinsPos = new MathUtils.Vector2(playerPos.x , playerPos.y);
-      var lastPoint = player.body2d;
+      var lastPoint = player.b2Body;
       
       for (var i =0; cJointPos.distance(destination) >= 1; i++)
       {
-        var diff = (i < 0)? 10 * 2 : 1;
-        cJointPos.x += vectorToFollow.x;
-        cJointPos.y += vectorToFollow.y;
+        cJointPos.x += vectorToFollow.x * 1.8;
+        cJointPos.y += vectorToFollow.y * 1.8;
         var length = new b2Vec2(cJointPos.x - lastJoinsPos.x , cJointPos.y - lastJoinsPos.y);
         
         var cPoint = this.createPoint(cJointPos);
@@ -149,86 +162,174 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem"], function(Box2D, sta
       
       var cJoint = this.createJoint(lastPoint, cPoint.GetBody(), length)
       cJointsCreated.push(cJoint);
+    }
+    
+    var drawRope = function(ctx)
+    {
+      if (!cFixedPointsCreated || cFixedPointsCreated.length <= 0)
+      {
+        return;
+      }
       
-
+      
+      var lastPoint = new MathUtils.Vector2(player.offsetX + player.halfRealW, player.realY + player.halfRealH);
+ 
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ff0000';
+      
+      for(var i = 1; i < cFixedPointsCreated.length; i++)
+      {
+        
+        var cPointPos = new MathUtils.Vector2(cFixedPointsCreated[i].GetBody().GetPosition().x, cFixedPointsCreated[i].GetBody().GetPosition().y) ;
+        cPointPos.x = cPointPos.x * SCALE;
+        cPointPos.x = cPointPos.x - (player.realX - player.offsetX);
+        cPointPos.y *= SCALE;
+        ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(lastPoint.x , lastPoint.y);
+          ctx.lineTo(cPointPos.x, cPointPos.y);
+          ctx.stroke();
+        ctx.restore();
+        lastPoint =cPointPos;
+      }
+    }
+    
+    this.createBuildings = function()
+    {
+      if (buildings.length > 6)
+      {
+        buildings.splice(0, 3);
+      }
+      for (var i = 0; i < 3; i++)
+      {
+        var newBuilding = new Building(lastBuildingPos, floor, Building.prototype.randomH(), SCALE, canvas);
+        buildings.push(newBuilding);
+        lastBuildingPos+= Building.prototype.w + Building.prototype.offsetX;
+      }
+    }
+    
+    this.isPointInABuilding = function(point)
+    {
+      for (var i =0; i < buildings.length; i++)
+      {
+        var b = buildings[i];
+        if (b.mouseCollison(point))
+        {
+          return true;
+        }
+      }
+      return false;
     }
     
     
-    this.createWorld = function(eventBus) 
+    var points = [];
+    this.setup = function(eventBus) 
     {
           ctx = this.ctx;
           canvas = this.canvas;
           _eventBus = eventBus;
           
-          world = new b2World(
-              new b2Vec2(1,9.5) //gravity
-          ,true //allow sleep
-          );
           
-          world.canvas = this.canvas;
-
-          world.SetContactListener(listener);
-     
-
-          floor = new Elem(world,  SCALE, (this.canvas.width * 0.5) / SCALE, this.canvas.height / SCALE - 2, (this.canvas.width * 0.3) / SCALE, 1)
-
-          //create PLAYER
-          player = new Player(world,SCALE, 1, 0.5);
-          
-          var debugDraw = new b2DebugDraw();
-          debugDraw.SetSprite(ctx);
-          debugDraw.SetDrawScale(SCALE);
-          debugDraw.SetFillAlpha(0.3);
-          debugDraw.SetLineThickness(1.0);
-          debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-          world.SetDebugDraw(debugDraw);
-          eventBus.on("mouseup", function(mousepos){
-            var nMousePos = {"x" : mousepos.x/SCALE, "y" : mousepos.y/SCALE}
-           
-            if (!ropeCreated)
-            {
-              pointer.createRope(nMousePos);
-            }
-            else
-            {
-              pointer.deleteRope();
-            }
-            ropeCreated = !ropeCreated;
-          });
-          eventBus.emit("changeUpdateCtx", "game");
+    }
+    
+    this.launch = function()
+    {
+      points = [];
+      cJointsCreated = [];
+      cFixedPointsCreated = [];
       
+      world = new b2World(new b2Vec2(1,9.5) ,true );
+          
+      world.canvas = this.canvas;
+
+      world.SetContactListener(listener);
+
+      floor = new Elem(world,  SCALE, (this.canvas.width * 0.5) / SCALE, this.canvas.height / SCALE - 2, (this.canvas.width * 0.5) / SCALE, 1, "floor")
+      
+      //create PLAYER
+      player = new Player(world,SCALE, 0.5, 0.5);
+    
+      //CREATE BUILDINGS
+      this.createBuildings();
+      
+      
+      _eventBus.on("mouseup", function(mousepos)
+      {
+        player.updateRealPos();
+        var nMousePos = {"x" : mousepos.x / SCALE, "y" : mousepos.y/SCALE}
+        var diffX =  nMousePos.x - (player.offsetX / SCALE);  
+        var destination = new MathUtils.Vector2(player.b2Body.GetPosition().x + diffX, nMousePos.y);
+        //points.push(new Elem(world,  SCALE, destination.x, destination.y, 1, 1));
+        if (!ropeCreated)
+        {
+          
+          if (!pointer.isPointInABuilding(destination))
+          {
+            return;
+          }
+          pointer.createRope(destination);
+          //player.b2Body.ApplyImpulse(new b2Vec2( 0.5, 0), player.b2Body.GetWorldCenter())
+        }
+        else
+        {
+          pointer.deleteRope();
+          player.b2Body.ApplyImpulse(new b2Vec2( 1, 0), player.b2Body.GetWorldCenter())
+        }
+        ropeCreated = !ropeCreated;
+      });
+      _eventBus.emit("changeUpdateCtx", "game");
+      
+      
+      
+      /*
+      var debugDraw = new b2DebugDraw();
+      debugDraw.SetSprite(ctx);
+      debugDraw.SetDrawScale(SCALE);
+      debugDraw.SetFillAlpha(0.3);
+      debugDraw.SetLineThickness(1.0);
+      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+      world.SetDebugDraw(debugDraw);
+      */
     }
 
 
 
     function render()
     {
-      //ctx.clearRect(0, 0, canvas.width , canvas.height )
+      ctx.clearRect(0, 0, canvas.width , canvas.height )
       ctx.globalAlpha = 0.5;
+      
+      for (var i = 0; i < buildings.length; i++)
+      {
+        var b = buildings[i];
+        b.draw(ctx, player);
+      }
+      floor.draw(ctx, player);
       player.draw(ctx);
-      floor.draw(ctx, player)
+   
+      drawRope(ctx);
+      
+      ctx.fillStyle = "#000000";
+      ctx.fillText  (Math.floor(player.realX), 40, 100);
     }
     
     var lastTime = new Date().getTime();
     this.update = function(time) {
-      world.Step(
-        1/60
-        ,10
-        ,10
-      );
-      world.DrawDebugData();
-      world.ClearForces();
-      stats.update();
       
-      player.updateCamera();
-      //player.body2d.ApplyImpulse(new b2Vec2( 0.0001, 0), player.body2d.GetWorldCenter())
-      /*
-      if (lastTime + 1500 < time )
+      //world.DrawDebugData();
+      world.ClearForces();
+      player.updateRealPos();
+      floor.b2Body.SetPosition({"x" : player.b2Body.GetPosition().x + ((player.offsetX * 0.5 - player.realW) / SCALE), "y" : floor.b2Body.GetPosition().y});
+    
+      if (lastBuildingPos - player.realX < (Building.prototype.w + Building.prototype.offsetX) * 2)
       {
-        world.DestroyJoint(cJoint);
-      }
-      */
+        this.createBuildings();
+      } 
+      
       render();
+      world.Step(1/60,10,10);
+      stats.update();
     }
 
   }
