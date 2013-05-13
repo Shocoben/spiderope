@@ -1,14 +1,18 @@
-define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], function(Box2D, stats, MathUtils, Player, Elem, Building){
+define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"], function(Box2D, stats, MathUtils, Player, Elem, Building, Blood){
   
   var Game = new function()
   {
       var world;
       var player;
       var myBodies;
+      var blood;
+      var bloodList = [];
+      var nBlood = 0;
       var SCALE = 15;
       var buildings = [];
       var lastBuildingPos = 0;
-
+      var isGameOver = false;
+      
       var b2Vec2 = Box2D.Common.Math.b2Vec2
           , b2BodyDef = Box2D.Dynamics.b2BodyDef
           , b2Body = Box2D.Dynamics.b2Body
@@ -38,7 +42,11 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
             && (contact.GetFixtureB().GetBody().GetUserData() == "floor")
         )
         {
-          console.log("gameOver");
+          isGameOver = true;
+        }
+        else{
+          isGameOver = false;
+          // blood = undefined;
         }
       }
 
@@ -50,6 +58,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
         && (contact.GetFixtureB().GetBody().GetUserData() == "floor")
         )
         {
+          
+          //Créer sang
+          
           
         }
       }
@@ -211,7 +222,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
     
     this.isPointInABuilding = function(point)
     {
-      for (var i =0; i < buildings.length; i++)
+      for (var i = 0; i < buildings.length; i++)
       {
         var b = buildings[i];
         if (b.mouseCollison(point))
@@ -226,11 +237,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
     var points = [];
     this.setup = function(eventBus) 
     {
-          ctx = this.ctx;
-          canvas = this.canvas;
-          _eventBus = eventBus;
-          
-          
+      ctx = this.ctx;
+      canvas = this.canvas;
+      _eventBus = eventBus;
     }
     
     this.launch = function()
@@ -240,6 +249,16 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
       cFixedPointsCreated = [];
       
       world = new b2World(new b2Vec2(1,9.5) ,true );
+      
+      var debugDraw = new b2DebugDraw();
+      debugDraw.SetSprite(this.canvas.getContext("2d"));
+      debugDraw.SetDrawScale(30.0);
+      debugDraw.SetFillAlpha(1);
+      debugDraw.SetLineThickness(1.0);
+      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+      world.SetDebugDraw(debugDraw);
+      
+      
           
       world.canvas = this.canvas;
 
@@ -249,6 +268,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
       
       //create PLAYER
       player = new Player(world,SCALE, 0.5, 0.5);
+      
+          // blood = new Blood(world, player, SCALE, 0.3, 0.3);
     
       //CREATE BUILDINGS
       this.createBuildings();
@@ -300,14 +321,21 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
       ctx.clearRect(0, 0, canvas.width , canvas.height )
       ctx.globalAlpha = 0.5;
       
+      
+          world.DrawDebugData();
+          
       for (var i = 0; i < buildings.length; i++)
       {
         var b = buildings[i];
         b.draw(ctx, player);
       }
+      
       floor.draw(ctx, player);
       player.draw(ctx);
-   
+      if(typeof(blood) !== "undefined"){
+        // blood.draw(ctx);
+      }
+      
       drawRope(ctx);
       
       ctx.fillStyle = "#000000";
@@ -317,6 +345,12 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
     var lastTime = new Date().getTime();
     this.update = function(time) {
       
+      if ( isGameOver ){
+        // blood = new Blood(world, player, SCALE, 0.3, 0.3);
+         console.log(nBlood);
+        bloodList.push( new Blood(world, player, SCALE, 3, 3, player.b2Body.GetPosition().x, player.b2Body.GetPosition().y) );
+        nBlood++;
+      }
       //world.DrawDebugData();
       world.ClearForces();
       player.updateRealPos();
@@ -330,6 +364,14 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building"], functio
       render();
       world.Step(1/60,10,10);
       stats.update();
+      for( i = 0 ; i < nBlood ; ++i){
+        bloodList[i].update();
+        
+        if(bloodList[i].isDead == true){
+          bloodList.splice(i,1);
+          nBlood-- ;
+        }
+      }
     }
 
   }

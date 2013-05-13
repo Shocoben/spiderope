@@ -47,7 +47,6 @@ function(Box2D, Stats, gameLoop, game, menu, Canvas, canvasParams, eventBus, mou
     gameLoop.connectToEventBus(eventBus);
     gameLoop.init();
     
-    
     hub.add("menu", menu);
     hub.add("game", game);
     hub.setup(eventBus, imagesManager, gameLoop, canvas);

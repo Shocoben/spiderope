@@ -40,6 +40,7 @@ define(["box2D"],function(box2D)
     {
       this.realX = (this.b2Body.GetPosition().x - w ) * SCALE;
       this.realY = (this.b2Body.GetPosition().y - h) * SCALE;
+      
     }
     
     this.draw = function(ctx)
@@ -53,6 +54,7 @@ define(["box2D"],function(box2D)
             ctx.rotate(this.b2Body.GetAngle());  
             ctx.fillRect(-this.halfRealW, -this.halfRealH , this.realW , this.realH);
         ctx.restore();
+        
     }
     
     this.updateRealPos();
