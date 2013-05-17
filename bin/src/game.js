@@ -333,7 +333,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
       floor.draw(ctx, player);
       player.draw(ctx);
       if(typeof(blood) !== "undefined"){
-        // blood.draw(ctx);
+        blood.draw(ctx);
       }
       
       drawRope(ctx);
@@ -348,7 +348,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
       if ( isGameOver ){
         // blood = new Blood(world, player, SCALE, 0.3, 0.3);
          console.log(nBlood);
-        bloodList.push( new Blood(world, player, SCALE, 3, 3, player.b2Body.GetPosition().x, player.b2Body.GetPosition().y) );
+         console.log("y" + player.b2Body.GetPosition().y);
+        bloodList.push( new Blood(world, player, SCALE, 3, 3, -player.halfRealW, player.b2Body.GetPosition().y) );
         nBlood++;
       }
       //world.DrawDebugData();

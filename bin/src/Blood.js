@@ -19,8 +19,8 @@ define(["box2D", "Player"], function(Box2D, Player){
     bodyDef.type = b2Body.b2_dynamicBody;
                  
     // positions the center of the object (not upper left!)
-    bodyDef.position.x = 5 / SCALE;
-    bodyDef.position.y = 0;
+    // bodyDef.position.x = x;
+    // bodyDef.position.y = y;
 
       
 			// fixDef.shape = new b2PolygonShape;
@@ -54,6 +54,9 @@ define(["box2D", "Player"], function(Box2D, Player){
       // this.y = player.b2Body.GetPosition().y;
       this.x = x;
       this.y = y;
+      
+      bodyDef.position.x = x;
+      bodyDef.position.y = y;
       
       this.time = Date.now();
     }
