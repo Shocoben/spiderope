@@ -329,10 +329,6 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
         var b = buildings[i];
         b.draw(ctx, cameraPos);
       }
-      if (isGameOver)
-      {
-        console.log(cameraPos.x);
-      }
       floor.draw(ctx, cameraPos);
       player.draw(ctx, cameraPos);
       if(typeof(blood) !== "undefined"){
