@@ -12,7 +12,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
       var buildings = [];
       var lastBuildingPos = 0;
       var isGameOver = false;
-      
+      var cameraPos = null;
+      var life = 100;
+      var damage = 100;
       var b2Vec2 = Box2D.Common.Math.b2Vec2
           , b2BodyDef = Box2D.Dynamics.b2BodyDef
           , b2Body = Box2D.Dynamics.b2Body
@@ -33,7 +35,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
       //Add listeners for contact
       var listener = new b2Listener;
       var pointer = this;
-
+      
+      
+      var onGround = false;
       listener.BeginContact = function(contact)
       {
         if ((contact.GetFixtureA().GetBody().GetUserData() == "floor")
@@ -42,11 +46,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
             && (contact.GetFixtureB().GetBody().GetUserData() == "floor")
         )
         {
-          isGameOver = true;
-        }
-        else{
-          isGameOver = false;
-          // blood = undefined;
+          //Creer sang
+          onGround = true;
         }
       }
 
@@ -58,10 +59,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
         && (contact.GetFixtureB().GetBody().GetUserData() == "floor")
         )
         {
-          
-          //Créer sang
-          
-          
+    
+          onGround = false;
         }
       }
   
@@ -269,6 +268,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
       //create PLAYER
       player = new Player(world,SCALE, 0.5, 0.5);
       
+      cameraPos = player;
           // blood = new Blood(world, player, SCALE, 0.3, 0.3);
     
       //CREATE BUILDINGS
@@ -327,11 +327,14 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
       for (var i = 0; i < buildings.length; i++)
       {
         var b = buildings[i];
-        b.draw(ctx, player);
+        b.draw(ctx, cameraPos);
       }
-      
-      floor.draw(ctx, player);
-      player.draw(ctx);
+      if (isGameOver)
+      {
+        console.log(cameraPos.x);
+      }
+      floor.draw(ctx, cameraPos);
+      player.draw(ctx, cameraPos);
       if(typeof(blood) !== "undefined"){
         blood.draw(ctx);
       }
@@ -343,28 +346,63 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
     }
     
     var lastTime = new Date().getTime();
-    this.update = function(time) {
-      
-      if ( isGameOver ){
+    var lastLostOfLife = new Date().getTime();
+    var delayLoseLife = 500;
+    
+    this.whenOnGround = function(time)
+    {
+        
+        life -= damage;
+        /*
         // blood = new Blood(world, player, SCALE, 0.3, 0.3);
          console.log(nBlood);
          console.log("y" + player.b2Body.GetPosition().y);
+        */
         bloodList.push( new Blood(world, player, SCALE, 3, 3, -player.halfRealW, player.b2Body.GetPosition().y) );
         nBlood++;
-      }
+    }
+    
+    this.update = function(time) 
+    {
+      
+      
       //world.DrawDebugData();
       world.ClearForces();
-      player.updateRealPos();
-      floor.b2Body.SetPosition({"x" : player.b2Body.GetPosition().x + ((player.offsetX * 0.5 - player.realW) / SCALE), "y" : floor.b2Body.GetPosition().y});
-    
-      if (lastBuildingPos - player.realX < (Building.prototype.w + Building.prototype.offsetX) * 2)
+      if (!isGameOver)
       {
-        this.createBuildings();
+        player.updateRealPos();
+        floor.b2Body.SetPosition({"x" : player.b2Body.GetPosition().x + ((player.offsetX * 0.5 - player.realW) / SCALE), "y" : floor.b2Body.GetPosition().y});
+        if (lastBuildingPos - player.realX < (Building.prototype.w + Building.prototype.offsetX) * 2)
+        {
+          this.createBuildings();
+        }
+      
+      
+      }
+      
+  
+    
+  
+      if ( onGround ){
+        this.whenOnGround(time);
+      }
+      
+      if (life <= 0)
+      {
+        if (isGameOver == false)
+        {
+           cameraPos = {"realX" : player.realX.valueOf(), "realY" : player.realY.valueOf(), "offsetX" : player.offsetX.valueOf()}
+        }
+        isGameOver = true;
+     
+       
       } 
       
-      render();
-      world.Step(1/60,10,10);
-      stats.update();
+      if (isGameOver)
+      {
+        console.log("hello");
+      }
+      
       for( i = 0 ; i < nBlood ; ++i){
         bloodList[i].update();
         
@@ -373,7 +411,13 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood"]
           nBlood-- ;
         }
       }
-    }
+   
+      
+      render();
+      world.Step(1/60,10,10);
+      stats.update();
+    } 
+  
 
   }
   

@@ -40,21 +40,27 @@ define(["box2D"],function(box2D)
     {
       this.realX = (this.b2Body.GetPosition().x - w ) * SCALE;
       this.realY = (this.b2Body.GetPosition().y - h) * SCALE;
-      
     }
     
-    this.draw = function(ctx)
+
+    this.updateRelativePos = function(camera)
     {
-        var renderY = this.realY;
-        var renderX = offsetX;
+        this.updateRealPos();
+        this.renderY = this.realY;  
+        this.renderX = (this.realX) - (camera.realX - camera.offsetX);
+    }
+    
+    this.draw = function(ctx, camera)
+    {
+        
+        this.updateRelativePos(camera);
         ctx.save(); 
             ctx.fillStyle = "#FF0000";
-            ctx.translate(renderX, renderY);
+            ctx.translate(this.renderX, this.renderY);
             ctx.translate(this.halfRealW, this.halfRealH);
             ctx.rotate(this.b2Body.GetAngle());  
             ctx.fillRect(-this.halfRealW, -this.halfRealH , this.realW , this.realH);
         ctx.restore();
-        
     }
     
     this.updateRealPos();

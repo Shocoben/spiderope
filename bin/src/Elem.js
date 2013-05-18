@@ -41,7 +41,6 @@ define(["box2D"],function(box2D)
     this.updateRelativePos = function(camera)
     {
         this.updateRealPos();
-        var body = this.b2Body;
         this.renderY = this.realY;  
         this.renderX = (this.realX) - (camera.realX - camera.offsetX);
     }
