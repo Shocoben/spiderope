@@ -37,6 +37,7 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 
 		this.draw = function(ctx)
 		{
+			ctx.globalAlpha = 1;
 			for(var i = 0; i<= _maxZ; i++)
 			{
 				var currentZ = this.elems[i];
