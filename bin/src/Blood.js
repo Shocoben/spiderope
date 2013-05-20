@@ -42,31 +42,31 @@ define(["box2D", "Player"], function(Box2D, Player){
     this.realW = this.halfRealW * 2;
     this.realH = this.halfRealH * 2;
     
+    this.realX;
+    this.realY;
+    
     this.hitBox = 0.3 + Math.random();
     
     var offsetX = this.offsetX = 300;
     
-    this.init = function()
+    this.init = function(ctx, camera)
     {
-      this.realX = (player.b2Body.GetPosition().x - w ) * SCALE;
-      this.realY = (player.b2Body.GetPosition().y - h) * SCALE;
-      // this.x = player.b2Body.GetPosition().x;
-      // this.y = player.b2Body.GetPosition().y;
-      this.x = x;
-      this.y = y;
       
-      bodyDef.position.x = x;
-      bodyDef.position.y = y;
+      this.renderY = this.realY;  
+      this.renderX = (this.realX) - (camera.realX - camera.offsetX);    
+      // this.x = x;
+      // this.y = y;
+      console.log("y :" + this.realY + " x :" + this.realX);
+      // bodyDef.position.x = x;
+      // bodyDef.position.y = y;
       
       this.time = Date.now();
     }
     
     this.updateRealPos = function()
     {
-      // this.realX = (this.b2Body.GetPosition().x - w ) * SCALE;
-      // this.realX = (player.b2Body.GetPosition().x - w ) * SCALE;
-      // this.realY = (this.b2Body.GetPosition().y - h) * SCALE;
-      // this.realY = (player.b2Body.GetPosition().y - h) * SCALE;
+        this.realX = (this.b2Body.GetPosition().x * SCALE) - this.halfRealW;
+        this.realY = (this.b2Body.GetPosition().y * SCALE) - this.halfRealH;
     }
     
     this.update = function(){
@@ -87,7 +87,7 @@ define(["box2D", "Player"], function(Box2D, Player){
             ctx.translate(this.halfRealW, this.halfRealH);
             ctx.rotate(this.b2Body.GetAngle());  
         ctx.fillStyle = "rgba(0,0,255,0.9)";
-        ctx.arc(this.x ,this.y , this.hitBox, 0, Math.PI * 2, true);
+        ctx.arc(this.realX ,this.realY , this.hitBox, 0, Math.PI * 2, true);
         console.log(this.x);
             
         ctx.stroke();
