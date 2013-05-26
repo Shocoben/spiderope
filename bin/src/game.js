@@ -1,4 +1,4 @@
-define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGUI"], function(Box2D, stats, MathUtils, Player, Elem, Building, Blood, GameOverGUI){
+define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGUI", "gameGUI", "canvasParams"], function(Box2D, stats, MathUtils, Player, Elem, Building, Blood, GameOverGUI, GameGUI, canvasParams){
   
   var Game = new function()
   {
@@ -40,10 +40,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       //Add listeners for contact
       var listener = new b2Listener;
  
-      
-      console.log(GameOverGUI);
       var gameOverGUI = new GameOverGUI();
-      
+      var gameGUI = new GameGUI();
     
       listener.BeginContact = function(contact)
       {
@@ -188,8 +186,12 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
         return;
       }
       
-      
-      var lastPoint = new MathUtils.Vector2(player.offsetX + player.halfRealW, player.realY + player.halfRealH);
+       var lastPoint = new MathUtils.Vector2(player.offsetX + player.halfRealW, player.realY + player.halfRealH);
+      if (player.realY - player.offsetY < 0)
+      {
+        lastPoint = new MathUtils.Vector2(player.offsetX + player.halfRealW, player.offsetY + player.halfRealH);
+      }
+     
  
       ctx.globalAlpha = 1;
       ctx.lineWidth = 2;
@@ -201,7 +203,17 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
         var cPointPos = new MathUtils.Vector2(cFixedPointsCreated[i].GetBody().GetPosition().x, cFixedPointsCreated[i].GetBody().GetPosition().y) ;
         cPointPos.x = cPointPos.x * SCALE;
         cPointPos.x = cPointPos.x - (player.realX - player.offsetX);
-        cPointPos.y *= SCALE;
+
+        if (player.realY - player.offsetY < 0)
+        {
+          cPointPos.y *= SCALE;
+          cPointPos.y = cPointPos.y - (player.realY - player.offsetY);
+        }
+        else
+        {
+          cPointPos.y *= SCALE; 
+        }
+        
         ctx.save();
           ctx.beginPath();
           ctx.moveTo(lastPoint.x , lastPoint.y);
@@ -210,6 +222,17 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
         ctx.restore();
         lastPoint =cPointPos;
       }
+    }
+
+    this.createFirstBuildings = function()
+    {
+      for (var i = 0; i < 2; i++)
+      {
+        var newBuilding = new Building(lastBuildingPos, floor, Building.prototype.big, SCALE, canvas);
+        buildings.push(newBuilding);
+        lastBuildingPos+= Building.prototype.w + Building.prototype.offsetX;
+      }
+      buildings[0].tutoMode();
     }
     
     this.createBuildings = function()
@@ -248,9 +271,12 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       canvas = this.canvas;
       _eventBus = eventBus;
       gameOverGUI.setup(eventBus, imagesManager); 
+      gameGUI.setup(eventBus, imagesManager);
       
     }
     
+    var tutoState = 0;
+
     this.reset = function()
     {
       bloodList = [];
@@ -265,7 +291,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       points = [];
       cJoint = null;
       onGround = false;
-      
+      ropeCreated = false;
+      gameGUI.stopSayToDeleteRope();
+      tutoState = 0;
     }
     
     this.launch = function()
@@ -298,7 +326,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
           // blood = new Blood(world, player, SCALE, 0.3, 0.3);
     
       //CREATE BUILDINGS
-      this.createBuildings();
+      this.createFirstBuildings();
       
       
       _eventBus.on("mouseup", function(mousepos)
@@ -312,11 +340,19 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
           player.updateRealPos();
           var nMousePos = {"x" : mousepos.x / SCALE, "y" : mousepos.y/SCALE}
           var diffX =  nMousePos.x - (player.offsetX / SCALE);  
-          var destination = new MathUtils.Vector2(player.b2Body.GetPosition().x + diffX, nMousePos.y);
+          var diffY = nMousePos.y - (player.offsetY / SCALE);
+          var y = (player.realY - player.offsetY < 0) ? player.b2Body.GetPosition().y + diffY : nMousePos.y;
+          var destination = new MathUtils.Vector2(player.b2Body.GetPosition().x + diffX, y);
           //points.push(new Elem(world,  SCALE, destination.x, destination.y, 1, 1));
           if (!ropeCreated)
           {
             
+            if (tutoState == 0)
+            {
+              buildings[0].normalMode()
+              gameGUI.sayToDeleteRope();
+              tutoState++;
+            }
             if (!pointer.isPointInABuilding(destination))
             {
               return;
@@ -326,6 +362,11 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
           }
           else
           {
+
+            if (tutoState == 1)
+            {
+              gameGUI.stopSayToDeleteRope();
+            }
             pointer.deleteRope();
             player.b2Body.ApplyImpulse(new b2Vec2( 1, 0), player.b2Body.GetWorldCenter())
           }
@@ -344,8 +385,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       debugDraw.SetFillAlpha(0.3);
       debugDraw.SetLineThickness(1.0);
       debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-      world.SetDebugDraw(debugDraw);
-      */
+      world.SetDebugDraw(debugDraw);*/
+      
     }
 
 
@@ -356,8 +397,13 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       ctx.globalAlpha = 0.5;
       
       
-          world.DrawDebugData();
-          
+      //world.DrawDebugData();
+      
+      for (var i = 0, b = null; b = bloodList[i]; ++i)
+      {
+        b.draw(ctx, cameraPos);
+      }
+
       for (var i = 0; i < buildings.length; i++)
       {
         var b = buildings[i];
@@ -365,31 +411,33 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       }
       floor.draw(ctx, cameraPos);
       player.draw(ctx, cameraPos);
-      if(typeof(blood) !== "undefined"){
-        blood.draw(ctx);
-      }
       
+
+
       drawRope(ctx);
       
-      ctx.fillStyle = "#000000";
-      ctx.fillText  (Math.floor(player.realX), 40, 100);
+      if (!isGameOver)
+      {
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "#000000";
+        ctx.fillText  (Math.floor(player.realX), canvasParams.width - 100, 100);
+      }
+ 
     }
     
     var lastTime = new Date().getTime();
     var lastLostOfLife = new Date().getTime();
     var delayLoseLife = 500;
-    
     this.whenOnGround = function(time)
     {
         
-        life -= damage;
-        /*
-        // blood = new Blood(world, player, SCALE, 0.3, 0.3);
-         console.log(nBlood);
-         console.log("y" + player.b2Body.GetPosition().y);
-        */
-        bloodList.push( new Blood(world, player, SCALE, 3, 3, -player.halfRealW, player.b2Body.GetPosition().y) );
-        nBlood++;
+        if (!isGameOver)
+        {
+          life -= damage;
+          for (var i = 0; i < 5; ++i)
+            bloodList.push( new Blood(world, player, SCALE) );
+        }
+
     }
     
     this.update = function(time) 
@@ -407,7 +455,6 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
           this.createBuildings();
         }
       
-      
       }
       
   
@@ -417,20 +464,36 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
         this.whenOnGround(time);
       }
       
+      //when you die , called only once
       if (life <= 0 && !isGameOver)
       {
+
         cameraPos = {"realX" : player.realX.valueOf(), "realY" : player.realY.valueOf(), "offsetX" : player.offsetX.valueOf()}
+        var score = Math.floor(player.realX);
+        if (localStorage)
+        {
+           var highscore = parseInt(localStorage['spideropehighscore']) || 0;
+           if (score > highscore)
+           {
+            console.log("newhigh");
+            localStorage["spideropehighscore"] = score;
+           } 
+        }
+        gameOverGUI.updateScore(score);
+        this.deleteRope();
         isGameOver = true;
       } 
       
    
       
-      for( i = 0 ; i < nBlood ; ++i){
-        bloodList[i].update();
-        
-        if(bloodList[i].isDead == true){
+      
+      for( i = 0 ; i < bloodList.length ; ++i){
+        bloodList[i].update(time);
+
+        if(bloodList[i].isDead == true)
+        {
+          world.DestroyBody(bloodList[i].b2Body);
           bloodList.splice(i,1);
-          nBlood-- ;
         }
       }
    
@@ -439,6 +502,10 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       if (isGameOver)
       {
         gameOverGUI.draw(ctx);
+      }
+      if (!isGameOver)
+      {
+        gameGUI.draw(ctx);
       }
       world.Step(1/60,10,10);
       stats.update();

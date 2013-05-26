@@ -35,7 +35,7 @@ define(["box2D"],function(box2D)
     this.realH = this.halfRealH * 2;
     
     var offsetX = this.offsetX = 300;
-    
+    var offsetY = this.offsetY = 100;
     this.updateRealPos = function()
     {
       this.realX = (this.b2Body.GetPosition().x - w ) * SCALE;
@@ -46,7 +46,14 @@ define(["box2D"],function(box2D)
     this.updateRelativePos = function(camera)
     {
         this.updateRealPos();
-        this.renderY = this.realY;  
+        if (camera.realY - camera.offsetY < 0)
+        {
+           this.renderY = (this.realY) - (camera.realY - camera.offsetY);  
+        }
+        else
+        {
+         this.renderY = this.realY;  
+        } 
         this.renderX = (this.realX) - (camera.realX - camera.offsetX);
     }
     

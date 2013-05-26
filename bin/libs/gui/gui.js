@@ -12,8 +12,10 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 		this.Button = Button;
 		this.Label = Label;
 		
-		this.add = function(elem, name, z_index)
+		var nbrElems = 0;
+		this.add = function(elem, nName, z_index)
 		{
+			var name = nName || nbrElems;
 			var z_index = z_index || 0;
 			if (z_index > _maxZ)
 			{
@@ -27,12 +29,14 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 			elem.name = name;
 			elem.z_index = z_index;
 			this.elems[z_index][name] = elem;
+			nbrElems++;
 			return elem;
 		}
 
 		this.del = function(elem)
 		{
 			delete this.elems[elem.z_index][elem.name];
+			nbrElems--;
 		}
 
 		this.draw = function(ctx)
