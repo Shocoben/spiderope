@@ -1,4 +1,4 @@
-define(["gui"], function(GUI){
+define(["gui", "canvasParams"], function(GUI, canvasParams){
   
   var GameOverGUI =  function()
   {
@@ -7,6 +7,9 @@ define(["gui"], function(GUI){
     var _eventBus;
     var _imagesManager;
     
+    var scoreText;
+    var bestScore;
+
     this.setup = function(eventBus, imagesManager)
     {
       _eventBus = eventBus;
@@ -16,10 +19,35 @@ define(["gui"], function(GUI){
       this.gui = myGUI;
       var visuPlayBtn = new myGUI.Visuel(imagesManager.getImage("startBtn"));
       
-      myGUI.add(new myGUI.Button(0,0,100, 100, visuPlayBtn, function()
+      var btnWidth = 100;
+
+
+
+
+      scoreText = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,150));
+      scoreText.textAlign = "center";
+      scoreText.x -= scoreText.w * 2;
+
+      if (localStorage)
+      {
+        bestScore = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,200));
+        bestScore.textAlign = "center";
+        bestScore.x -= bestScore.w * 2.8;
+      }
+
+      myGUI.add(new myGUI.Button( (canvasParams.width * 0.5) - (btnWidth * 0.5) ,250,btnWidth, 100, visuPlayBtn, function()
       {
        _eventBus.emit("launchgame");
       }));
+    }
+
+    this.updateScore = function(nScore)
+    {
+      scoreText.text = "Your score : " + nScore;
+      if (localStorage && bestScore) {
+        var hightscore = localStorage['spideropehighscore'] || 0;
+        bestScore.text = "Your best score : " + hightscore;
+      }
     }
     
     this.update = function() {

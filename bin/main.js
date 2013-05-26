@@ -20,6 +20,7 @@ require.config(
         ,"collisionPointAABB" : "../libs/collisionPointAABB"
         ,"ImagesManager" : "../libs/imagesmanager"
         ,"gameimages" : "../setup/gameimages"
+        ,"buzz" : "../libs/buzz"
     }
     ,shim: {
         'box2D': {
@@ -33,8 +34,8 @@ require.config(
 } );
 
 
-require(["box2D","stats", "gameLoop","Game", "menu", "canvas", "canvasParams", "eventBus", "mouseCoords", "ImagesManager", "gameimages", "hub"], 
-function(Box2D, Stats, gameLoop, game, menu, Canvas, canvasParams, eventBus, mouseCoords, ImagesManager, gameimages, hub)
+require(["box2D","stats", "gameLoop","Game", "menu", "canvas", "canvasParams", "eventBus", "mouseCoords", "ImagesManager", "gameimages", "hub", "soundManager"], 
+function(Box2D, Stats, gameLoop, game, menu, Canvas, canvasParams, eventBus, mouseCoords, ImagesManager, gameimages, hub, soundManager)
 {
     var canvas = new Canvas(document.body, canvasParams);
 
@@ -47,6 +48,8 @@ function(Box2D, Stats, gameLoop, game, menu, Canvas, canvasParams, eventBus, mou
     gameLoop.connectToEventBus(eventBus);
     gameLoop.init();
     
+    
+    soundManager.library["bigcity"].play().loop();
     hub.add("menu", menu);
     hub.add("game", game);
     hub.setup(eventBus, imagesManager, gameLoop, canvas);

@@ -39,8 +39,11 @@ define(["canvas", "canvasParams"], function(Canvas, canvasParams){
 			this.y += params.offsetY || 0;
 		}
 
+		this.textAlign = "left";
+
 		this.draw = function(ctx)
 		{
+			ctx.textAlign = this.textAligne;
 			ctx.font = this.font;
 			ctx.fillStyle = this.color;
 			ctx.fillText(this.text, this.x, this.y)
