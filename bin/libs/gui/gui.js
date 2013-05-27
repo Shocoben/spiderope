@@ -122,12 +122,13 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 			}
 			return false;
 		}
+    
 		this.onMouseMove = function(mouseCoords)
 		{
 			var used = false;
       
       
-      canvas.style.cursor = "pointer";
+        canvas.style.cursor = "pointer";    
       
 			for(var i = _maxZ; i>=0 ; i--)
 			{

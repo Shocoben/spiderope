@@ -7,21 +7,29 @@ define(["gui"], function(GUI){
     var myGUI;
     var _eventBus;
     var _imagesManager;
+    var _canvas;
     
-    this.setup = function(eventBus, imagesManager)
+    
+    this.setup = function(eventBus, imagesManager, mouseCoords)
     {
+      
       _eventBus = eventBus;
       _imagesManager = imagesManager;
+      _canvas = this.canvas;
       
       menuGUI = new GUI();
       var visuPlayBtn = new menuGUI.Visuel(imagesManager.getImage("startBtn"));
-      
-      menuGUI.add(new menuGUI.Button(320,230,400*0.8, 280*0.8, visuPlayBtn, function()
+      var playBtn = new menuGUI.Button(320,230,400*0.8, 280*0.8, visuPlayBtn, function()
       {
        _eventBus.emit("launchgame");
-      }));
+      });
+      menuGUI.add(playBtn);
       
-      // menuGUI.Button.onMouseMove(mouseCoords);
+      playBtn.onMouseMove = function(mouseCoords)
+      {
+        console.log("patate");
+        _canvas.style.cursor = "pointer";            
+      };
       
        myGUI = new GUI();
         this.gui = myGUI;
