@@ -21,9 +21,6 @@ define(["gui", "canvasParams"], function(GUI, canvasParams){
       
       var btnWidth = 100;
 
-
-
-      
       scoreText = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,150, {"color" : "#ffffff", "family" : "GROBOLDRegular"}));
       scoreText.textAlign = "center";
       scoreText.x -= scoreText.w * 2;

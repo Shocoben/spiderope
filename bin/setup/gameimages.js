@@ -1,6 +1,7 @@
 define(function () {
 	var gameImages = [
-		["startBtn", "/startbutton.png"]
+	["startBtn", "/startbutton.png"]
+    ,["BG", "/BGspider.png"]
     ,["title", "/titre.png"]
     ,["clickTuto", "/tuto1.png"]
     ,["droptherope", "/tuto2.png"]

@@ -42,7 +42,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
  
       var gameOverGUI = new GameOverGUI();
       var gameGUI = new GameGUI();
-    
+      var bgImage;
+      
       listener.BeginContact = function(contact)
       {
         if ((contact.GetFixtureA().GetBody().GetUserData() == "floor")
@@ -267,7 +268,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
     }
     
     
-
+    var ratioScreenBg = 0;
+    var bgWidth;
     this.setup = function(eventBus, imagesManager) 
     {
       this.deleteRope();
@@ -277,7 +279,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       _imagesManager = imagesManager;
       gameOverGUI.setup(eventBus, imagesManager); 
       gameGUI.setup(eventBus, imagesManager);
-      
+      bgImage = imagesManager.getImage("BG");
+      ratioScreenBg = canvas.height / bgImage.height;
     }
     
     var tutoState = 0;
@@ -303,9 +306,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
     
     this.launch = function()
     {
-
       this.reset();
-      
       world = new b2World(new b2Vec2(1,9.5) ,true );
       
       var debugDraw = new b2DebugDraw();
@@ -393,16 +394,18 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       world.SetDebugDraw(debugDraw);*/
       
     }
-
+    
+  
     function render()
     {
-      ctx.fillStyle = "#01060a";
+      ctx.fillStyle = "#142634";
       ctx.fillRect(0, 0, canvas.width , canvas.height )
       ctx.globalAlpha = 1;
 
       //world.DrawDebugData();
-      
-
+      var bgOneX = 0 - (player.realX * 0.3);
+      var bgTwoX = 
+      ctx.drawImage(bgImage, bgOneX, 0, bgImage.width * ratioScreenBg, canvas.height);
 
       for (var i = 0; i < buildings.length; i++)
       {
