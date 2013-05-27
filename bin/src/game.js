@@ -281,10 +281,14 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       gameGUI.setup(eventBus, imagesManager);
       bgImage = imagesManager.getImage("BG");
       ratioScreenBg = canvas.height / bgImage.height;
+      bgWidth = bgImage.width * ratioScreenBg;
     }
     
     var tutoState = 0;
-
+    var bgOneX ;
+    var bgTwoX ;
+    var lastCameraPosX;
+    var bgDepth = 0.3;
     this.reset = function()
     {
       bloodList = [];
@@ -302,6 +306,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       ropeCreated = false;
       gameGUI.stopSayToDeleteRope();
       tutoState = 0;
+      bgOneX = 0;
+      bgTwoX = bgOneX + bgWidth;
+      
     }
     
     this.launch = function()
@@ -329,6 +336,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       player = new Player(world, SCALE, 0.5, 0.5, _imagesManager.getImage("player"));
       
       cameraPos = player;
+      lastCameraPos = cameraPos;
           // blood = new Blood(world, player, SCALE, 0.3, 0.3);
     
       //CREATE BUILDINGS
@@ -395,18 +403,18 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       
     }
     
-  
     function render()
     {
-      ctx.fillStyle = "#142634";
+      ctx.fillStyle = "#04111c";
       ctx.fillRect(0, 0, canvas.width , canvas.height )
       ctx.globalAlpha = 1;
 
       //world.DrawDebugData();
-      var bgOneX = 0 - (player.realX * 0.3);
-      var bgTwoX = 
-      ctx.drawImage(bgImage, bgOneX, 0, bgImage.width * ratioScreenBg, canvas.height);
-
+    
+      var bgY =  (cameraPos.realY - cameraPos.offsetY < 0)? 0 - (cameraPos.realY - cameraPos.offsetY) * bgDepth * 2 : 0; 
+      ctx.drawImage(bgImage, bgOneX, bgY, bgWidth, canvas.height);
+      ctx.drawImage(bgImage, bgTwoX, bgY, bgWidth, canvas.height);
+      
       for (var i = 0; i < buildings.length; i++)
       {
         var b = buildings[i];
@@ -448,6 +456,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
 
     }
     
+    
+
     this.update = function(time) 
     {
       
@@ -465,17 +475,15 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       
       }
       
-  
-    
-  
       if ( onGround ){
         this.whenOnGround(time);
       }
       
+      
+   
       //when you die , called only once
       if (life <= 0 && !isGameOver)
       {
-
         cameraPos = {"realX" : player.realX.valueOf(), "realY" : player.realY.valueOf(), "offsetX" : player.offsetX.valueOf()}
         var score = Math.floor(player.b2Body.GetPosition().x);
         if (localStorage)
@@ -504,7 +512,18 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
           bloodList.splice(i,1);
         }
       }
-   
+
+      bgOneX += (lastCameraPos.realX - cameraPos.realX) * bgDepth;
+      bgTwoX += (lastCameraPos.realX - cameraPos.realX) * bgDepth;
+      lastCameraPos = {"realX" : cameraPos.realX.valueOf(), "realY" : cameraPos.realY.valueOf(), "offsetX" : cameraPos.offsetX.valueOf()};
+      if (bgOneX + bgWidth < 0)
+      {
+        bgOneX = bgTwoX + bgWidth;
+      }
+      if (bgTwoX + bgWidth < 0)
+      {
+        bgTwoX = bgOneX + bgWidth;
+      }
       
       render();
       if (isGameOver)

@@ -18,7 +18,7 @@ define(["box2D"],function(box2D)
                  
     // positions the center of the object (not upper left!)
     bodyDef.position.x = 5 / SCALE;
-    bodyDef.position.y = 0;
+    bodyDef.position.y = -10;
 
     fixDef.shape = new b2PolygonShape;
     fixDef.shape.SetAsBox(w,h);
