@@ -90,6 +90,8 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 		this.onMouseUp = function(mouseCoords)
 		{
 			var used = false;
+      
+      
 			for(var i = _maxZ; i>=0 ; i--)
 			{
 		
@@ -123,6 +125,10 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 		this.onMouseMove = function(mouseCoords)
 		{
 			var used = false;
+      
+      
+      canvas.style.cursor = "pointer";
+      
 			for(var i = _maxZ; i>=0 ; i--)
 			{
 				if (used)
