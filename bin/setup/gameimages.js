@@ -12,6 +12,8 @@ define(function () {
     ,["isart", "/isartBLC.png"]
     ,["player", "/araignee.png"]
     ,["die", "/araigneeDie.png"]
+    ,["sonON", "/sonON.png"]
+    ,["sonOFF", "/sonOFF.png"]
 	];
 
 	return gameImages;
