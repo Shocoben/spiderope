@@ -23,14 +23,14 @@ define(["gui", "canvasParams"], function(GUI, canvasParams){
 
 
 
-
-      scoreText = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,150));
+      
+      scoreText = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,150, {"color" : "#ffffff", "family" : "GROBOLDRegular"}));
       scoreText.textAlign = "center";
       scoreText.x -= scoreText.w * 2;
 
       if (localStorage)
       {
-        bestScore = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,200));
+        bestScore = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,200, {"color" : "#ffffff", "family" : "GROBOLDRegular"}));
         bestScore.textAlign = "center";
         bestScore.x -= bestScore.w * 2.8;
       }
@@ -43,10 +43,10 @@ define(["gui", "canvasParams"], function(GUI, canvasParams){
 
     this.updateScore = function(nScore)
     {
-      scoreText.text = "Your score : " + nScore;
+      scoreText.text = "Your score : " + nScore + " cm";
       if (localStorage && bestScore) {
         var hightscore = localStorage['spideropehighscore'] || 0;
-        bestScore.text = "Your best score : " + hightscore;
+        bestScore.text = "Your best score : " + hightscore + " cm";
       }
     }
     

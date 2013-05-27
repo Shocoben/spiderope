@@ -1,6 +1,6 @@
 define(["box2D"],function(box2D)
 {
-  var Elem = function(world, SCALE,x, y, w, h, tag)
+  var Elem = function(world, SCALE,x, y, w, h, tag, image)
   {
     var b2BodyDef = Box2D.Dynamics.b2BodyDef
     , b2Body = Box2D.Dynamics.b2Body
@@ -31,12 +31,14 @@ define(["box2D"],function(box2D)
     this.b2Body = this.b2Elem.GetBody();
     this.b2Body.SetUserData(tag);
     
+    this.image = image;
     this.b2w = w;
     this.b2h = h;
     this.halfRealW = w * SCALE;
     this.halfRealH = h * SCALE;
     this.realW = this.halfRealW * 2;
     this.realH = this.halfRealH * 2;
+    this.color = "#3C3935";
     
     this.updateRelativePos = function(camera)
     {
@@ -60,12 +62,28 @@ define(["box2D"],function(box2D)
         this.realY = (this.b2Body.GetPosition().y * SCALE) - this.halfRealH;
     }
     
-    this.draw = function(ctx, camera)
+    var drawWithColor = function(ctx, camera)
     {
-        ctx.fillStyle = "#FF0000";
+        ctx.fillStyle = this.color;
         this.updateRelativePos(camera);
-        ctx.fillRect(this.renderX, this.renderY , this.realW , this.realH);
+        ctx.fillRect( this.renderX, this.renderY , this.realW , this.realH);
     }
+    
+    var drawWithImage = function(ctx, camera)
+    {
+        this.updateRelativePos(camera);
+        ctx.drawImage(this.image, this.renderX, this.renderY , this.realW , this.realH);
+    }
+    
+    if (image)
+    {
+        this.draw = drawWithImage;
+    }
+    else
+    {
+        this.draw = drawWithColor;
+    }
+    
     
     this.updateRealPos();
     

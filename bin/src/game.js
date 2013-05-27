@@ -73,7 +73,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
     var ctx;
     var canvas;
     var _eventBus;
-  
+    var _imagesManager;
  
     this.createPoint = function(position, fixed)
     {
@@ -193,9 +193,9 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       }
      
  
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.8;
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#ff0000';
+      ctx.strokeStyle = '#dddddd';
       
       for(var i = 1; i < cFixedPointsCreated.length; i++)
       {
@@ -224,13 +224,19 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       }
     }
 
+    this.generateBuild = function(random)
+    {
+      var size = (random) ? Building.prototype.randomH() : 1;
+      var newBuilding = new Building(lastBuildingPos, floor, size, SCALE, canvas, _imagesManager);
+      buildings.push(newBuilding);
+      lastBuildingPos+= Building.prototype.w + Building.prototype.offsetX;
+    }
+    
     this.createFirstBuildings = function()
     {
       for (var i = 0; i < 2; i++)
       {
-        var newBuilding = new Building(lastBuildingPos, floor, Building.prototype.big, SCALE, canvas);
-        buildings.push(newBuilding);
-        lastBuildingPos+= Building.prototype.w + Building.prototype.offsetX;
+        this.generateBuild(false);
       }
       buildings[0].tutoMode();
     }
@@ -243,9 +249,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       }
       for (var i = 0; i < 3; i++)
       {
-        var newBuilding = new Building(lastBuildingPos, floor, Building.prototype.randomH(), SCALE, canvas);
-        buildings.push(newBuilding);
-        lastBuildingPos+= Building.prototype.w + Building.prototype.offsetX;
+        this.generateBuild(true);
       }
     }
     
@@ -270,6 +274,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       ctx = this.ctx;
       canvas = this.canvas;
       _eventBus = eventBus;
+      _imagesManager = imagesManager;
       gameOverGUI.setup(eventBus, imagesManager); 
       gameGUI.setup(eventBus, imagesManager);
       
@@ -320,7 +325,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       floor = new Elem(world,  SCALE, (this.canvas.width * 0.5) / SCALE, this.canvas.height / SCALE - 2, (this.canvas.width * 0.5) / SCALE, 1, "floor")
       
       //create PLAYER
-      player = new Player(world,SCALE, 0.5, 0.5);
+      player = new Player(world, SCALE, 0.5, 0.5, _imagesManager.getImage("player"));
       
       cameraPos = player;
           // blood = new Blood(world, player, SCALE, 0.3, 0.3);
@@ -389,38 +394,38 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       
     }
 
-
-
     function render()
     {
-      ctx.clearRect(0, 0, canvas.width , canvas.height )
-      ctx.globalAlpha = 0.5;
-      
-      
+      ctx.fillStyle = "#01060a";
+      ctx.fillRect(0, 0, canvas.width , canvas.height )
+      ctx.globalAlpha = 1;
+
       //world.DrawDebugData();
       
-      for (var i = 0, b = null; b = bloodList[i]; ++i)
-      {
-        b.draw(ctx, cameraPos);
-      }
+
 
       for (var i = 0; i < buildings.length; i++)
       {
         var b = buildings[i];
         b.draw(ctx, cameraPos);
       }
-      floor.draw(ctx, cameraPos);
-      player.draw(ctx, cameraPos);
       
-
-
+      for (var i = 0, b = null; b = bloodList[i]; ++i)
+      {
+        b.draw(ctx, cameraPos);
+      }
+      
+      ctx.lineWidth = 1;
       drawRope(ctx);
+      player.draw(ctx, cameraPos);
+      floor.draw(ctx, cameraPos);
       
       if (!isGameOver)
       {
         ctx.globalAlpha = 1;
-        ctx.fillStyle = "#000000";
-        ctx.fillText  (Math.floor(player.realX), canvasParams.width - 100, 100);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "11pt GROBOLDRegular";
+        ctx.fillText  (Math.floor(player.b2Body.GetPosition().x) + " cm", canvasParams.width - 100, 100);
       }
  
     }
@@ -469,7 +474,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       {
 
         cameraPos = {"realX" : player.realX.valueOf(), "realY" : player.realY.valueOf(), "offsetX" : player.offsetX.valueOf()}
-        var score = Math.floor(player.realX);
+        var score = Math.floor(player.b2Body.GetPosition().x);
         if (localStorage)
         {
            var highscore = parseInt(localStorage['spideropehighscore']) || 0;

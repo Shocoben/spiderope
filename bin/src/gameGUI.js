@@ -20,7 +20,7 @@ define(["gui", "canvasParams"], function(GUI, canvasParams){
 
     this.sayToDeleteRope = function()
     {
-      deleteTutoVisu = new myGUI.Visuel(_imagesManager.getImage("startBtn"), {"x" : 500, "y" : 300, "w" : 100, "h":100});
+      deleteTutoVisu = new myGUI.Visuel(_imagesManager.getImage("droptherope"), {"x" : 500, "y" : 300, "w" : (513 * 0.4), "h":(113 * 0.4)});
       myGUI.add(deleteTutoVisu, "deleterope");
     }
 

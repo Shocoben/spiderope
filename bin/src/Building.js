@@ -1,10 +1,11 @@
 define(["collisionPointAABB"], function(collisionPointAABB){
-  var Building = function(x,floor, h, SCALE, canvas)
+  var Building = function(x, floor, size, SCALE, canvas, imagesManager)
   {
     this.w = this.w;
-    this.h = h;
+    console.log(size);
+    this.h = this.sizes[size].h;
     this.x = x;
-    
+    this.image = imagesManager.getImage(this.sizes[size].image);
     this.y = floor.realY - this.h;
     
     this.box2dw = this.w / SCALE;
@@ -22,11 +23,12 @@ define(["collisionPointAABB"], function(collisionPointAABB){
        this.renderY = this.y;  
       } 
     }
+    
     var normalDraw = function(ctx, camera)
     {
       this.getRenderPos(camera);
       ctx.fillStyle = "#0000FF";
-      ctx.fillRect(this.renderX, this.renderY , this.w , this.h);
+      ctx.drawImage(this.image, this.renderX, this.renderY, this.w, this.h);
     }
 
     var tutoDraw = function(ctx, camera)
@@ -56,26 +58,16 @@ define(["collisionPointAABB"], function(collisionPointAABB){
     }
   }
   
-  Building.prototype.tall = 200;
-  Building.prototype.middle = 350;
-  Building.prototype.big = 500
-
+  
+  Building.prototype.sizes = [ 
+    {"h" : 200, "image" : "cartontall" }
+    ,{"h" : 350, "image" : "cartonmiddle"}
+    ,{"h" : 500, "image" : "cartonmiddle"}
+  ]
 
   Building.prototype.randomH = function()
   {
-    var random = Math.floor(Math.random() * 3);
-    if (random == 0)
-    {
-      return this.tall;
-    }
-    else if (random == 1)
-    {
-      return this.middle;
-    }
-    else (random == 2)
-    {
-      return this.big;
-    }
+    return Math.floor(Math.random() * this.sizes.length);
   }
   
 

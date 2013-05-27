@@ -1,6 +1,6 @@
 define(["box2D"],function(box2D)
 {
-  var Player = function(world, SCALE, w, h)
+  var Player = function(world, SCALE, w, h, image)
   {
    var b2BodyDef = Box2D.Dynamics.b2BodyDef
     , b2Body = Box2D.Dynamics.b2Body
@@ -29,11 +29,12 @@ define(["box2D"],function(box2D)
     
     this.b2w = w;
     this.b2h = h;
+    w*=2;
     this.halfRealW = w * SCALE;
     this.halfRealH = h * SCALE;
     this.realW = this.halfRealW * 2;
     this.realH = this.halfRealH * 2;
-    
+    this.image = image;
     var offsetX = this.offsetX = 300;
     var offsetY = this.offsetY = 100;
     this.updateRealPos = function()
@@ -59,14 +60,14 @@ define(["box2D"],function(box2D)
     
     this.draw = function(ctx, camera)
     {
-        
+        ctx.globalAlpha = 1;
         this.updateRelativePos(camera);
         ctx.save(); 
-            ctx.fillStyle = "#FF0000";
+            //ctx.fillStyle = "#FF0000";
             ctx.translate(this.renderX, this.renderY);
             ctx.translate(this.halfRealW, this.halfRealH);
             ctx.rotate(this.b2Body.GetAngle());  
-            ctx.fillRect(-this.halfRealW, -this.halfRealH , this.realW , this.realH);
+            ctx.drawImage(this.image, -this.halfRealW, -this.halfRealH , this.realW , this.realH);
         ctx.restore();
     }
     
