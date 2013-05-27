@@ -4,6 +4,7 @@ define(["gui"], function(GUI){
   {
     
     var menuGUI = this.gui;
+    var myGUI;
     var _eventBus;
     var _imagesManager;
     
@@ -15,10 +16,18 @@ define(["gui"], function(GUI){
       menuGUI = new GUI();
       var visuPlayBtn = new menuGUI.Visuel(imagesManager.getImage("startBtn"));
       
-      menuGUI.add(new menuGUI.Button(0,0,400, 280, visuPlayBtn, function()
+      menuGUI.add(new menuGUI.Button(320,230,400*0.8, 280*0.8, visuPlayBtn, function()
       {
        _eventBus.emit("launchgame");
       }));
+      
+       myGUI = new GUI();
+        this.gui = myGUI;
+      
+      menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("credit"), {"x" : 10, "y" : 170, "w" : (400 ), "h":(400)}));
+      menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("title"), {"x" : 50, "y" : 0, "w" : (800 * 0.8), "h":(503 * 0.8)}));
+      menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("isart"), {"x" : 600, "y" : 500, "w" : (200 ), "h":(72)}));
+      
     }
 
     this.launch = function()

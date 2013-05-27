@@ -14,6 +14,7 @@ define(function () {
     ,["die", "/araigneeDie.png"]
     ,["sonON", "/sonON.png"]
     ,["sonOFF", "/sonOFF.png"]
+    ,["credit", "/credit.png"]
 	];
 
 	return gameImages;
