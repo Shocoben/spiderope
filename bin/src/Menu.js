@@ -21,6 +21,8 @@ define(["gui"], function(GUI){
        _eventBus.emit("launchgame");
       }));
       
+      // menuGUI.Button.onMouseMove(mouseCoords);
+      
        myGUI = new GUI();
         this.gui = myGUI;
       
