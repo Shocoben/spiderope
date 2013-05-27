@@ -34,8 +34,8 @@ require.config(
 } );
 
 
-require(["box2D","stats", "gameLoop","Game", "menu", "canvas", "canvasParams", "eventBus", "mouseCoords", "ImagesManager", "gameimages", "hub", "soundManager"], 
-function(Box2D, Stats, gameLoop, game, menu, Canvas, canvasParams, eventBus, mouseCoords, ImagesManager, gameimages, hub, soundManager)
+require(["box2D","stats", "gameLoop","Game", "menu", "loading", "canvas", "canvasParams", "eventBus", "mouseCoords", "ImagesManager", "gameimages", "hub", "soundManager"], 
+function(Box2D, Stats, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, mouseCoords, ImagesManager, gameimages, hub, soundManager)
 {
     var canvas = new Canvas(document.body, canvasParams);
 
@@ -52,9 +52,12 @@ function(Box2D, Stats, gameLoop, game, menu, Canvas, canvasParams, eventBus, mou
     soundManager.library["bigcity"].play().loop();
     hub.add("menu", menu);
     hub.add("game", game);
+    console.log(loading);
+    hub.add("loading", loading);
+    
     hub.setup(eventBus, imagesManager, gameLoop, canvas);
 
-    hub.launch("menu");
+    hub.launch("loading");
     //menu.init(eventBus, imagesManager, gamePad, game);
 
     
