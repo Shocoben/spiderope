@@ -15,7 +15,7 @@ define(["gui"], function(GUI){
       menuGUI = new GUI();
       var visuPlayBtn = new menuGUI.Visuel(imagesManager.getImage("startBtn"));
       
-      menuGUI.add(new menuGUI.Button(0,0,100, 100, visuPlayBtn, function()
+      menuGUI.add(new menuGUI.Button(0,0,400, 280, visuPlayBtn, function()
       {
        _eventBus.emit("launchgame");
       }));
