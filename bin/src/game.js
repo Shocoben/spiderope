@@ -276,7 +276,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
     
     
     var ratioScreenBg = 0;
-    var bgWidth;
+    var bgWidth = 0;
     this.setup = function(eventBus, imagesManager) 
     {
       this.deleteRope();
@@ -286,9 +286,6 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       _imagesManager = imagesManager;
       gameOverGUI.setup(eventBus, imagesManager); 
       gameGUI.setup(eventBus, imagesManager);
-      bgImage = imagesManager.getImage("BG");
-      ratioScreenBg = canvas.height / bgImage.height;
-      bgWidth = bgImage.width * ratioScreenBg;
       audioButton.prototype.addTo(gameGUI.gui);
       audioButton.prototype.addTo(gameOverGUI.gui);
     }
@@ -325,11 +322,18 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       
       audioButton.prototype.moveFor();
       audioButton.prototype.moveFor();
-      
+  
     }
-    
+    var alreadyDone = false;
     this.launch = function()
     {
+      if (!alreadyDone)
+      {
+        bgImage = _imagesManager.getImage("BG");
+        ratioScreenBg = canvas.height / bgImage.height;
+        bgWidth = bgImage.width * ratioScreenBg;
+        alreadyDone = true;
+      }
       this.reset();
       world = new b2World(new b2Vec2(1,9.5) ,true );
       
@@ -432,6 +436,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       //world.DrawDebugData();
     
       var bgY =  (cameraPos.realY - cameraPos.offsetY < 0)? 0 - (cameraPos.realY - cameraPos.offsetY) * bgDepth * 2 : 0; 
+
       ctx.drawImage(bgImage, bgOneX, bgY, bgWidth, canvas.height);
       ctx.drawImage(bgImage, bgTwoX, bgY, bgWidth, canvas.height);
       
@@ -451,6 +456,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       player.draw(ctx, cameraPos);
       floor.draw(ctx, cameraPos);
       
+      ctx.drawImage(_imagesManager.getImage("flou"), 0, 0, canvas.width, canvas.height);
       if (!isGameOver)
       {
         ctx.globalAlpha = 1;
@@ -469,7 +475,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       }
       
       
-      ctx.drawImage(_imagesManager.getImage("flou"), 0, 0, canvas.width, canvas.height);
+      
     }
     
     var lastTime = new Date().getTime();
@@ -490,7 +496,6 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
     
     var diffTime = 0;
     var highscore = 0;
-    var done = false;
     this.update = function(time) 
     {
       diffTime = startTime - time;
@@ -549,12 +554,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
         }
       }
       
-      if (!done)
-      {
-        console.log(lastCameraPos.realX);
-      }
-       
-      done = true;
+
       
       bgOneX += (lastCameraPos.realX - cameraPos.realX) * bgDepth;
       bgTwoX += (lastCameraPos.realX - cameraPos.realX) * bgDepth;

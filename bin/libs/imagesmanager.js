@@ -80,20 +80,28 @@
 		// Sets the image to loaded state;
 		currentLoader.imageLoaded++;
 	}
+	
+	ImagesManager.prototype.isAllMoreThanZero = function(){
+		for (var i in this.imageList)
+		{
+			var image = this.imageList[i][1];
+			console.log(image.width);
+			if (image.width <= 0 || !image.width)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
 	ImagesManager.prototype.isLoaded = function()
 	{
-		if (this.imageLoaded >= this.numberImages){
-			for (var i = 0; i < this.imageList.length; i++)
-			{
-				if (this.imageList[i][1].width == 0)
-					return false;
-			}
-			return true;
-		}
-		else{
+		console.log(this.isAllMoreThanZero());
+		
+		if (this.imageLoaded < this.numberImages || !this.isAllMoreThanZero()){
 			return false;
 		}
+		return true;
 	}
 
 
