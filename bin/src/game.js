@@ -313,7 +313,6 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       gameGUI.stopSayToDeleteRope();
       tutoState = 0;
       bgOneX = 0;
-      console.log(bgWidth)
       bgTwoX = bgOneX + bgWidth;
       startTime = new Date().getTime() + gameDelay;
       if (localStorage)
@@ -530,7 +529,6 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
         if (localStorage)
         {
            highscore = parseInt(localStorage['spideropehighscore']) || 0;
-           console.log(highscore);
            if (score > highscore)
            {
             console.log("newhigh");
