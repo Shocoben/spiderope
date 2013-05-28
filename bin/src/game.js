@@ -291,8 +291,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       bgWidth = bgImage.width * ratioScreenBg;
       
       console.log(gameGUI.gui);
-      new audioButton(gameGUI.gui, imagesManager);
-      new audioButton(gameOverGUI.gui, imagesManager);
+
       
     }
     
@@ -325,6 +324,8 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       {
         highscore = localStorage["spideropehighscore"];
       }
+      
+
       
     }
     

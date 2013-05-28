@@ -15,14 +15,14 @@ define(["gui", "audioButton", "canvasParams"], function(GUI, audioButton, canvas
       
       menuGUI = new GUI();
       var visuPlayBtn = new menuGUI.Visuel(imagesManager.getImage("startBtn"));
-      var visuResetBtn = new menuGUI.Visuel(imagesManager.getImage("sonON"));
+      var visuResetBtn = new menuGUI.Visuel(imagesManager.getImage("refresh"));
       menuGUI.add(new menuGUI.Button(320,230,400*0.8, 280*0.8, visuPlayBtn, function()
       {
        _eventBus.emit("launchgame");
       }));
       var btnWidth = 388 * 0.1;
       var btnHeight = 490 * 0.1;
-      menuGUI.add(new menuGUI.Button(canvasParams.width - btnWidth - 10,50,btnWidth, btnHeight, visuResetBtn, function()
+      menuGUI.add(new menuGUI.Button(canvasParams.width - btnWidth - 15,70,btnWidth + 10, btnHeight, visuResetBtn, function()
       {
        if (localStorage)
        {
