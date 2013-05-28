@@ -16,7 +16,9 @@ require.config(
         ,"addEventCapabilities" : "../libs/addEventCapabilities"
         ,'eventBus' : "../libs/eventBus"
         ,"mouseCoords" : "../libs/mouseCoords"
+        ,"touchCoords" : "../libs/touchCoords"
         ,"addMouseEvents" : "../libs/addMouseEvents"
+        ,"addTouchEvents" : "../libs/addTouchEvents"
         ,"collisionPointAABB" : "../libs/collisionPointAABB"
         ,"ImagesManager" : "../libs/imagesmanager"
         ,"gameimages" : "../setup/gameimages"
@@ -34,8 +36,8 @@ require.config(
 } );
 
 
-require(["box2D", "gameLoop","game", "Menu", "loading", "canvas", "canvasParams", "eventBus", "mouseCoords", "ImagesManager", "gameimages", "hub", "soundManager"], 
-function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, mouseCoords, ImagesManager, gameimages, hub, soundManager)
+require(["box2D", "gameLoop","game", "Menu", "loading", "canvas", "canvasParams", "eventBus", "mouseCoords", "touchCoords", "ImagesManager", "gameimages", "hub", "soundManager"], 
+function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, mouseCoords,touchCoords, ImagesManager, gameimages, hub, soundManager)
 {
     var canvas = new Canvas(document.body, canvasParams);
 
@@ -48,8 +50,6 @@ function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, m
     gameLoop.connectToEventBus(eventBus);
     gameLoop.init();
     
-    
-    soundManager.library["bigcity"].play().loop();
     
     hub.add("menu", menu);
     hub.add("game", game);

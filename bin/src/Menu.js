@@ -26,7 +26,6 @@ define(["gui", "audioButton", "canvasParams"], function(GUI, audioButton, canvas
       {
        if (localStorage)
        {
-        console.log("reseted");
         localStorage["spideropehighscore"] = 0;
        }
       }));
