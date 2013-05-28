@@ -3,7 +3,7 @@ require.config(
     baseUrl: "./bin/src/"
     ,paths: {
         
-        'box2D' : '../libs/box2d.min'
+        'box2D' : '../libs/box2d.min.ie'
         ,"guiPath" : "../libs/gui"
         ,"gui" : "../libs/gui/gui"
         ,'stats' : '../libs/stats' 
@@ -52,7 +52,6 @@ function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, m
     soundManager.library["bigcity"].play().loop();
     hub.add("menu", menu);
     hub.add("game", game);
-    console.log(loading);
     hub.add("loading", loading);
     
     hub.setup(eventBus, imagesManager, gameLoop, canvas);

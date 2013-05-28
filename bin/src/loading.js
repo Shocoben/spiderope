@@ -26,11 +26,14 @@ define(["gui"], function(GUI){
       var diff = time * 0.001;
       var opacity = m.sin(diff) + m.cos(m.sin(diff)) ;
       opacity = 0.5  + (0.5 * opacity);
+      
       this.draw(opacity);
-      if(_imagesManager.isLoaded)
+      
+      if(_imagesManager.getLoadPercentage() == 100)
       {
         _eventBus.emit("launchmenu");
       }
+      
     }
     
     this.draw = function(opacity)
@@ -42,7 +45,7 @@ define(["gui"], function(GUI){
       ctx.globalAlpha = opacity;
       ctx.textAlign = "center";
       ctx.font = "16pt GROBOLDRegular";
-      ctx.fillText("Loading ...", canvas.width / 2, canvas.height / 2);
+      ctx.fillText("Loading "+_imagesManager.getLoadPercentage()+"%" , canvas.width / 2, canvas.height / 2);
     }
   }
   
