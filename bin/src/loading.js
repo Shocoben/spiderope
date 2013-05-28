@@ -45,7 +45,7 @@ define(["gui"], function(GUI){
       ctx.globalAlpha = opacity;
       ctx.textAlign = "center";
       ctx.font = "16pt GROBOLDRegular";
-      ctx.fillText("Loading "+_imagesManager.getLoadPercentage()+"%" , canvas.width / 2, canvas.height / 2);
+      ctx.fillText("Loading "+ Math.floor(_imagesManager.getLoadPercentage())+"%" , canvas.width / 2, canvas.height / 2);
     }
   }
   
