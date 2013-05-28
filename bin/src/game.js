@@ -19,6 +19,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       var cJoint = null;
       var onGround = false;
       var pointer = this;
+      var sound = true;
       
       var b2Vec2 = Box2D.Common.Math.b2Vec2
           , b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -43,6 +44,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       var gameOverGUI = new GameOverGUI();
       var gameGUI = new GameGUI();
       var bgImage;
+      var son;
       
       listener.BeginContact = function(contact)
       {
@@ -282,6 +284,7 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
       bgImage = imagesManager.getImage("BG");
       ratioScreenBg = canvas.height / bgImage.height;
       bgWidth = bgImage.width * ratioScreenBg;
+      son = imagesManager.getImage("sonON");
     }
     
     var tutoState = 0;
@@ -438,6 +441,8 @@ define(["box2D", "fpsFrame", "MathUtils", "Player", "Elem", "Building", "Blood",
         ctx.font = "11pt GROBOLDRegular";
         ctx.fillText  (Math.floor(player.b2Body.GetPosition().x) + " cm", canvasParams.width - 100, 100);
       }
+      
+      ctx.drawImage(son, 20, 500, 80, 80);
  
     }
     

@@ -15,6 +15,7 @@ define(function () {
     ,["sonON", "/sonON.png"]
     ,["sonOFF", "/sonOFF.png"]
     ,["credit", "/credit.png"]
+    ,["refresh", "/refresh.png"]
 	];
 
 	return gameImages;
