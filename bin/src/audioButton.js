@@ -23,7 +23,7 @@ define(["soundManager", "buzz", "gui", "canvasParams"], function(soundManager, b
       {
         soundBtn = new GUI.prototype.Button( 0, 0, btnWidth, btnHeight, visuAudioBtn, function()
         {
-          console.log("hello");
+        
           if (isPlaying)
           {
             this.visuel.image = imagesManager.getImage("sonOFF");
