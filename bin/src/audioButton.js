@@ -43,13 +43,21 @@ define(["soundManager", "buzz", "gui", "canvasParams"], function(soundManager, b
           if (isPlaying)
           {
             this.visuel.image = imagesManager.getImage("sonOFF");
-            localStorage["spideropeaudio"] = "off";
+            if (localStorage)
+            {
+              localStorage["spideropeaudio"] = "off";
+            }
+            
             soundManager.group.mute();
           }
           else
           {
            this.visuel.image = imagesManager.getImage("sonON");
-            localStorage["spideropeaudio"] = "on";
+           if (localStorage)
+           {
+             localStorage["spideropeaudio"] = "on";
+           }
+            
            soundManager.group.unmute();
           }
           isPlaying = !isPlaying;

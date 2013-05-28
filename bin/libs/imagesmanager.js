@@ -64,7 +64,7 @@
 				this.imageList[p[0]] = [p[0], new Image()]; // Pushes the image to the list					
 				this.imageList[p[0]][1].src = this.currentImagesPath + p[1];
 				var currentLoader = this;
-				this.imageList[p[0]][1].onload = function(){this.src = this.src; imageLoad(currentLoader);};// Gives a reference to the image when the function onload will be called
+				this.imageList[p[0]][1].onload = function(){imageLoad(currentLoader);};// Gives a reference to the image when the function onload will be called
 				this.numberImages++;
 			}
 		}
