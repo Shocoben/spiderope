@@ -7,13 +7,18 @@ define(["buzz"],function(buzz){
   var soundManager = new function()
   {
     this.library = {};
+    this.allSongs = [];
+    
     console.log(window.location);
     for (var i in sounds)
     {
-      this.library[i] = new buzz.sound( "sounds/"+ i, {
+      var sound = new buzz.sound( "sounds/"+ i, {
         formats: sounds[i]
       });
+      this.library[i] = sound;
+      this.allSongs.push(sound);
     }
+    this.group = new buzz.group(this.allSongs);
   } 
   
   return soundManager;

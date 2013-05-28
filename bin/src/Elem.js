@@ -12,7 +12,7 @@ define(["box2D"],function(box2D)
     fixDef.density = 1.;
     fixDef.friction = 10;
     fixDef.restitution = 0.0;
-    
+    fixDef.categoryBits=4;
     tag = tag || "";
     var bodyDef = new b2BodyDef;
     
@@ -20,6 +20,7 @@ define(["box2D"],function(box2D)
     bodyDef.type = b2Body.b2_staticBody;
            
     // positions the center of the object (not upper left!)
+    console.log(x);
     bodyDef.position.x = x;
     bodyDef.position.y = y;
 

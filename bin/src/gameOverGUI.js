@@ -19,20 +19,20 @@ define(["gui", "canvasParams"], function(GUI, canvasParams){
       this.gui = myGUI;
       var visuPlayBtn = new myGUI.Visuel(imagesManager.getImage("GOBtn"));
       
-      var btnWidth = 400;
+      var btnWidth = 400 * 0.7;
 
       scoreText = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,150, {"color" : "#ffffff", "family" : "GROBOLDRegular"}));
       scoreText.textAlign = "center";
-      scoreText.x -= scoreText.w * 2;
+      //scoreText.x -= scoreText.w;
 
       if (localStorage)
       {
         bestScore = myGUI.add(new myGUI.Label("hello", canvasParams.width / 2,200, {"color" : "#ffffff", "family" : "GROBOLDRegular"}));
         bestScore.textAlign = "center";
-        bestScore.x -= bestScore.w * 2.8;
+        //bestScore.x -= bestScore.w ;
       }
 
-      myGUI.add(new myGUI.Button( (canvasParams.width * 0.5) - (btnWidth * 0.5) ,250,btnWidth, 270, visuPlayBtn, function()
+      myGUI.add(new myGUI.Button( (canvasParams.width * 0.5) - (btnWidth * 0.5) ,250,btnWidth, 270 * 0.7, visuPlayBtn, function()
       {
        _eventBus.emit("launchgame");
       }));

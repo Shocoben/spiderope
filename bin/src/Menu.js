@@ -1,4 +1,4 @@
-define(["gui"], function(GUI){
+define(["gui", "audioButton", "canvasParams"], function(GUI, audioButton, canvasParams){
   
   var Menu = new function()
   {
@@ -15,10 +15,20 @@ define(["gui"], function(GUI){
       
       menuGUI = new GUI();
       var visuPlayBtn = new menuGUI.Visuel(imagesManager.getImage("startBtn"));
-      
+      var visuResetBtn = new menuGUI.Visuel(imagesManager.getImage("sonON"));
       menuGUI.add(new menuGUI.Button(320,230,400*0.8, 280*0.8, visuPlayBtn, function()
       {
        _eventBus.emit("launchgame");
+      }));
+      var btnWidth = 388 * 0.1;
+      var btnHeight = 490 * 0.1;
+      menuGUI.add(new menuGUI.Button(canvasParams.width - btnWidth - 10,50,btnWidth, btnHeight, visuResetBtn, function()
+      {
+       if (localStorage)
+       {
+        console.log("reseted");
+        localStorage["spideropehighscore"] = 0;
+       }
       }));
       
       // menuGUI.Button.onMouseMove(mouseCoords);
@@ -29,7 +39,7 @@ define(["gui"], function(GUI){
       menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("credit"), {"x" : 10, "y" : 170, "w" : (400 ), "h":(400)}));
       menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("title"), {"x" : 50, "y" : 0, "w" : (800 * 0.8), "h":(503 * 0.8)}));
       menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("isart"), {"x" : 600, "y" : 500, "w" : (200 ), "h":(72)}));
-      
+      new audioButton(menuGUI, _imagesManager, true);
     }
 
     this.launch = function()
@@ -41,6 +51,7 @@ define(["gui"], function(GUI){
     }
     
     this.update = function() {
+      this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
       menuGUI.draw(this.ctx);  
     }
   }
