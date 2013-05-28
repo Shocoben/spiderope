@@ -18,6 +18,7 @@ define(["game", "Menu"], function(game, menu){
     {
         eventBus.on(formatLaunchName(name), function(){
           eventBus.del("mouseup");
+          eventBus.del("touchend");
           elem.launch();
         });
     }

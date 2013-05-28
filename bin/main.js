@@ -44,6 +44,8 @@ function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, m
     mouseCoords.connectToCanvas(canvas.getDOM());
     mouseCoords.connectToEventBus(eventBus);
     
+    touchCoords.connectToCanvas(canvas.getDOM()).connectToEventBus(eventBus);
+    
     var imagesManager = new ImagesManager({"SD" : "images"});
     imagesManager.pushImages(gameimages);
     

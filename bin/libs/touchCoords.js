@@ -48,7 +48,36 @@ define(["addTouchEvents"], function(addTouch)
 		}
 
 		addTouch(touchCoords, {"touchMove" : true, "touchDown" : true});
-		return true;
+		return this;
+	}
+	
+	touchCoords.connectToCanvas = function(canvas_)
+	{
+			if (!canvas_)
+		{
+			console.error("Pas de canvas associé au touchCoords");
+			return ;
+		}
+
+		window.removeEventListener("touchmove", touchCoords.onTouchMove, true);
+		window.removeEventListener("touchstart", touchCoords.onTouchUp, true);
+
+		touchCoords.onTouchMove=function(e)
+		{
+			var body = document.body;
+			touches[e.identifier].coords = {"x": e.pageX - canvas_.offsetLeft + body.scrollLeft, "y": e.pageY - canvas_.offsetTop + body.scrollTop};
+		}
+		
+		touchCoords.onTouchDown = function(e)
+		{
+			var body = document.body;
+			touches[e.identifier] = {};
+			touches[e.identifier].id = e.identifier;
+			touches[e.identifier].coords = {"x": e.pageX - canvas_.offsetLeft + body.scrollLeft, "y": e.pageY - canvas_.offsetTop + body.scrollTop};
+		}
+
+		addTouch(touchCoords, {"touchMove" : true, "touchDown" : true});
+		return this;
 	}
 
 	touchCoords.connectToEventBus=function(eventBus)
@@ -81,6 +110,35 @@ define(["addTouchEvents"], function(addTouch)
 				}
 			}, false);
 		}
+		else
+		{
+			window.attachEvent("touchstart", function(e)
+			{
+				for(var i = 0; i< e.touches.length; i++)
+				{
+					eventBus.emit("touchstart", touches[e.touches[i].identifier]);
+				}
+			}, false);
+
+			window.attachEvent("touchmove", function(e)
+			{
+				for(var i = 0; i< e.touches.length; i++)
+				{
+					eventBus.emit("touchmove", touches[e.touches[i].identifier]);
+				}
+			}, false);
+
+			window.removeEventListener("touchend", touchCoords.onTouchUp, false);
+			window.attachEvent("touchend", function(e)
+			{
+				for(var i = 0; i< e.changedTouches.length; i++)
+				{
+					eventBus.emit("touchend", touches[e.changedTouches[i].identifier]);
+					delete touches[e.identifier];
+				}
+			}, false);
+		}
+		return this;
 	}
 	return touchCoords;
 });

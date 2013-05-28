@@ -45,9 +45,13 @@ define(["gui", "audioButton", "canvasParams"], function(GUI, audioButton, canvas
     this.launch = function()
     {
       _eventBus.emit("changeUpdateCtx", "menu");
+
       _eventBus.on("mouseup", function(mousecoords){
         menuGUI.onMouseUp(mousecoords);
       })
+      _eventBus.on("touchend", function(touch){
+        menuGUI.onMouseUp(touch.coords);
+      });
       audioButton.prototype.moveFor(true);
     }
     
