@@ -88,7 +88,7 @@ define(["collisionPointAABB", "dashedLine"], function(collisionPointAABB, dashed
   Building.prototype.sizes = [ 
     {"h" : 200, "image" : "cartontall" }
     ,{"h" : 350, "image" : "cartonmiddle"}
-    ,{"h" : 500, "image" : "cartonmiddle"}
+    ,{"h" : 500, "image" : "cartonlittle"}
   ]
 
   Building.prototype.randomH = function()
