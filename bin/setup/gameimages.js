@@ -11,6 +11,7 @@ define(function () {
     ,["flou", "/flouCamera.png"]
     ,["isart", "/isartBLC.png"]
     ,["player", "/araignee.png"]
+    ,["playerDead", "/araigneeDie.png"]
     ,["die", "/araigneeDie.png"]
     ,["sonON", "/sonON.png"]
     ,["sonOFF", "/sonOFF.png"]

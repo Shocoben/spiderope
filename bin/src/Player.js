@@ -12,13 +12,13 @@ define(["box2D"],function(box2D)
     fixDef.density = 0.1;
     fixDef.friction = 3;
     fixDef.restitution = 0.1;
-    
+    fixDef.maskBits = 4;
     var bodyDef = new b2BodyDef;
     bodyDef.type = b2Body.b2_dynamicBody;
                  
     // positions the center of the object (not upper left!)
     bodyDef.position.x = 5 / SCALE;
-    bodyDef.position.y = -10;
+    bodyDef.position.y = 0;
 
     fixDef.shape = new b2PolygonShape;
     fixDef.shape.SetAsBox(w,h);

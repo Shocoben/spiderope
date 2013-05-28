@@ -5,12 +5,7 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 	{
 		this.elems = {};
 		var _maxZ = 0;
-		this.HorizontalLayout = HorizontalLayout;
-		this.Visuel = Visuel;
-		this.Groupe = VisuMaster;
-		this.Window = Window;
-		this.Button = Button;
-		this.Label = Label;
+
 		
 		var nbrElems = 0;
 		this.add = function(elem, nName, z_index)
@@ -156,6 +151,7 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 				}
 			}
 			
+			return false;
 		}
 
 		this.translate = function(x,y)
@@ -188,6 +184,13 @@ function(HorizontalLayout, VisuMaster, Visuel, Window, Button, Label, pointAABB)
 	{
 		return new Window(x,y,w,h,params, GUI);
 	}
+	
+	GUI.prototype.HorizontalLayout = HorizontalLayout;
+	GUI.prototype.Visuel = Visuel;
+	GUI.prototype.Groupe = VisuMaster;
+	GUI.prototype.Window = Window;
+	GUI.prototype.Button = Button;
+	GUI.prototype.Label = Label;
 
 	return GUI;
 });
