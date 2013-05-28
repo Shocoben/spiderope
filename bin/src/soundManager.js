@@ -9,7 +9,6 @@ define(["buzz"],function(buzz){
     this.library = {};
     this.allSongs = [];
     
-    console.log(window.location);
     for (var i in sounds)
     {
       var sound = new buzz.sound( "sounds/"+ i, {

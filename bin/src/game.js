@@ -487,8 +487,9 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
     }
     
     
-    var diffTime;
+    var diffTime = 0;
     var highscore = 0;
+    var done = false;
     this.update = function(time) 
     {
       diffTime = startTime - time;
@@ -512,7 +513,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       }
       
       
-      
+      var done = false
       //when you die , called only once
       if ((life <= 0 || diffTime < 0) && !isGameOver)
       {
@@ -546,7 +547,14 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
           bloodList.splice(i,1);
         }
       }
-
+      
+      if (!done)
+      {
+        console.log(lastCameraPos.realX);
+      }
+       
+      done = true;
+      
       bgOneX += (lastCameraPos.realX - cameraPos.realX) * bgDepth;
       bgTwoX += (lastCameraPos.realX - cameraPos.realX) * bgDepth;
       lastCameraPos = {"realX" : cameraPos.realX.valueOf(), "realY" : cameraPos.realY.valueOf(), "offsetX" : cameraPos.offsetX.valueOf()};

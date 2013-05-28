@@ -29,7 +29,6 @@ define(["game", "Menu"], function(game, menu){
         canvas.associate(cElem);
         cElem.setup(eventBus, imagesManager);
         gameLoop.addUpdate(i, cElem);
-        console.log(formatLaunchName(i));
         setupLaunch(eventBus, i, cElem);
       }
     };

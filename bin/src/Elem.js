@@ -20,7 +20,6 @@ define(["box2D"],function(box2D)
     bodyDef.type = b2Body.b2_staticBody;
            
     // positions the center of the object (not upper left!)
-    console.log(x);
     bodyDef.position.x = x;
     bodyDef.position.y = y;
 
