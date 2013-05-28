@@ -29,7 +29,7 @@ define(["gui"], function(GUI){
       
       this.draw(opacity);
       
-      if(_imagesManager.getLoadPercentage() == 100)
+      if(_imagesManager.isLoaded())
       {
         _eventBus.emit("launchmenu");
       }

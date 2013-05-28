@@ -39,7 +39,8 @@ define(["gui", "audioButton", "canvasParams"], function(GUI, audioButton, canvas
       menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("credit"), {"x" : 10, "y" : 170, "w" : (400 ), "h":(400)}));
       menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("title"), {"x" : 50, "y" : 0, "w" : (800 * 0.8), "h":(503 * 0.8)}));
       menuGUI.add(new myGUI.Visuel(_imagesManager.getImage("isart"), {"x" : 600, "y" : 500, "w" : (200 ), "h":(72)}));
-      new audioButton(menuGUI, _imagesManager, true);
+      audioButton.prototype.create(_imagesManager, true);
+      audioButton.prototype.addTo(menuGUI);
     }
 
     this.launch = function()
@@ -48,6 +49,7 @@ define(["gui", "audioButton", "canvasParams"], function(GUI, audioButton, canvas
       _eventBus.on("mouseup", function(mousecoords){
         menuGUI.onMouseUp(mousecoords);
       })
+      audioButton.prototype.moveFor(true);
     }
     
     this.update = function() {

@@ -289,10 +289,8 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       bgImage = imagesManager.getImage("BG");
       ratioScreenBg = canvas.height / bgImage.height;
       bgWidth = bgImage.width * ratioScreenBg;
-      
-      console.log(gameGUI.gui);
-
-      
+      audioButton.prototype.addTo(gameGUI.gui);
+      audioButton.prototype.addTo(gameOverGUI.gui);
     }
     
     var tutoState = 0;
@@ -325,7 +323,8 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
         highscore = localStorage["spideropehighscore"];
       }
       
-
+      audioButton.prototype.moveFor();
+      audioButton.prototype.moveFor();
       
     }
     
