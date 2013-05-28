@@ -50,10 +50,10 @@ function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, m
     
     
     soundManager.library["bigcity"].play().loop();
-    hub.add("menu", menu);
+    
     hub.add("game", game);
     hub.add("loading", loading);
-    
+    hub.add("menu", menu);
     hub.setup(eventBus, imagesManager, gameLoop, canvas);
 
     hub.launch("loading");

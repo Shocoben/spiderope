@@ -48,6 +48,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       var gameGUI = new GameGUI();
       var bgImage;
       
+      
       listener.BeginContact = function(contact)
       {
         if ((contact.GetFixtureA().GetBody().GetUserData() == "floor")
@@ -290,8 +291,8 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       bgWidth = bgImage.width * ratioScreenBg;
       
       console.log(gameGUI.gui);
-      new audioButton(gameGUI.gui, imagesManager);
-      new audioButton(gameOverGUI.gui, imagesManager);
+
+      
     }
     
     var tutoState = 0;
@@ -323,6 +324,8 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       {
         highscore = localStorage["spideropehighscore"];
       }
+      
+
       
     }
     
@@ -465,7 +468,8 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
            ctx.fillText  ( "Best :" + Math.floor(highscore) + "cm", canvasParams.width - 100, 110);
         }
       }
- 
+      
+      
     }
     
     var lastTime = new Date().getTime();
