@@ -313,11 +313,12 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       gameGUI.stopSayToDeleteRope();
       tutoState = 0;
       bgOneX = 0;
+      console.log(bgWidth)
       bgTwoX = bgOneX + bgWidth;
       startTime = new Date().getTime() + gameDelay;
       if (localStorage)
       {
-        highscore = localStorage["spideropehighscore"];
+        highscore = localStorage["spideropehighscore"] || 0;
       }
       
       audioButton.prototype.moveFor();
@@ -363,8 +364,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       //CREATE BUILDINGS
       this.createFirstBuildings();
       
-      
-      _eventBus.on("mouseup", function(mousepos)
+      var onMouseUp = function(mousepos)
       {
         if (isGameOver)
         {
@@ -410,8 +410,12 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
           }
           ropeCreated = !ropeCreated;
         }
-
-      });
+      }
+      
+      _eventBus.on("mouseup", onMouseUp);
+      _eventBus.on("touchend", function(touch){
+        onMouseUp(touch.coords);
+      })
       _eventBus.emit("changeUpdateCtx", "game");
       
       
@@ -474,8 +478,6 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
         }
       }
       
-      
-      
     }
     
     var lastTime = new Date().getTime();
@@ -528,6 +530,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
         if (localStorage)
         {
            highscore = parseInt(localStorage['spideropehighscore']) || 0;
+           console.log(highscore);
            if (score > highscore)
            {
             console.log("newhigh");

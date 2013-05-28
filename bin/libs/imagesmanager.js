@@ -95,8 +95,6 @@
 
 	ImagesManager.prototype.isLoaded = function()
 	{
-  
-		
 		if (this.imageLoaded < this.numberImages || !this.isAllMoreThanZero()){
 			return false;
 		}
