@@ -85,7 +85,6 @@
 		for (var i in this.imageList)
 		{
 			var image = this.imageList[i][1];
-			console.log(image.width);
 			if (image.width <= 0 || !image.width)
 			{
 				return false;
@@ -96,7 +95,7 @@
 
 	ImagesManager.prototype.isLoaded = function()
 	{
-		console.log(this.isAllMoreThanZero());
+  
 		
 		if (this.imageLoaded < this.numberImages || !this.isAllMoreThanZero()){
 			return false;
