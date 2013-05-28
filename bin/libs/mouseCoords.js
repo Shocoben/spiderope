@@ -45,8 +45,8 @@ define(["addMouseEvents"], function(addMouseEvents){
 
 		mouseCoords.onMouseMove=function(e)
 		{
-			
-			mouseCoords.coords = {"x" : e.clientX - canvas_.offsetLeft, "y" : e.clientY - canvas_.offsetTop};
+			var body = document.body;
+			mouseCoords.coords = {"x" : e.clientX - canvas_.offsetLeft + body.scrollLeft, "y" : e.clientY - canvas_.offsetTop + body.scrollTop};
 		}
 
 		addMouseEvents(mouseCoords, {"mouseMove" : null});
