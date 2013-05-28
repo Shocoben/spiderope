@@ -469,6 +469,7 @@ define(["box2D", "MathUtils", "Player", "Elem", "Building", "Blood", "gameOverGU
       }
       
       
+      ctx.drawImage(_imagesManager.getImage("flou"), 0, 0, canvas.width, canvas.height);
     }
     
     var lastTime = new Date().getTime();
