@@ -36,8 +36,8 @@ require.config(
 } );
 
 
-require(["box2D", "gameLoop","game", "Menu", "loading", "canvas", "canvasParams", "eventBus", "mouseCoords", "touchCoords", "ImagesManager", "gameimages", "hub", "soundManager"], 
-function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, mouseCoords,touchCoords, ImagesManager, gameimages, hub, soundManager)
+require(["box2D", "gameLoop","game", "Menu", "loading", "canvas", "canvasParams", "eventBus", "mouseCoords", "touchCoords", "ImagesManager", "gameimages", "hub"], 
+function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, mouseCoords,touchCoords, ImagesManager, gameimages, hub)
 {
     var canvas = new Canvas(document.body, canvasParams);
 
