@@ -8,6 +8,36 @@ define(["addMouseEvents"], function(addMouseEvents){
 
 	this.mousemoveListeners = [];
 
+	mouseCoords.desactive = function(eventBus)
+	{
+		window.removeEventListener(this, this.onMouseMove, true);
+  		if (eventBus)
+  		{
+  			eventBus.del("mouseup");
+  			eventBus.del("mousedown");
+  			eventBus.del("mousemove");
+  			if (window.removeEventListener)
+  			{
+	  			window.removeEventListener(this, this.onMouseMoveEmiter);
+  				window.removeEventListener(this. this.onMouseUpEmiter);
+  				window.removeEventListener(this, this.onMouseDownEmiter);
+  			}
+  			else
+  			{
+  				window.detachEvent(this, this.onMouseDownEmiter);
+  				window.detachEvent(this, this.onMouseUpEmiter);
+  				window.detachEvent(this, this.onMouseMoveEmiter);
+  			}
+  		}
+	}
+
+	mouseCoords.desactiveIfTouchDevice = function(eventBus) 
+	{
+  		if (('ontouchstart' in window) || !!('onmsgesturechange' in window))
+  			return;
+  		desactive();
+	};
+
 	mouseCoords.onMouseMove = function(e)
 	{
 		mouseCoords.coords.x = e.clientX;
@@ -56,35 +86,30 @@ define(["addMouseEvents"], function(addMouseEvents){
 
 	mouseCoords.connectToEventBus=function(eventBus)
 	{
+		this.onMouseMoveEmiter = function()
+		{
+			eventBus.emit("mousemove", mouseCoords.coords);
+		}
+		this.onMouseUpEmiter = function()
+		{
+			eventBus.emit("mouseup", mouseCoords.coords);
+		}
+		this.onMouseDownEmiter = function()
+		{
+			eventBus.emit("mousedown", mouseCoords.coords);
+		}
+
 		if (window.addEventListener)
 		{
-			window.addEventListener("mousemove", function()
-			{
-				eventBus.emit("mousemove", mouseCoords.coords);
-			});
-			window.addEventListener("mousedown", function()
-			{
-				eventBus.emit("mousedown", mouseCoords.coords);
-			});
-			window.addEventListener("mouseup", function()
-			{
-				eventBus.emit("mouseup", mouseCoords.coords);
-			});
+			window.addEventListener("mousemove", this.onMouseMoveEmiter);
+			window.addEventListener("mousedown", this.onMouseDownEmiter);
+			window.addEventListener("mouseup", this.onMouseUpEmiter);
 		}
 		else
 		{
-			window.attachEvent("mousemove", function()
-			{
-				eventBus.emit("mousemove", mouseCoords.coords);
-			});
-			window.attachEvent("mousedown", function()
-			{
-				eventBus.emit("mousedown", mouseCoords.coords);
-			});
-			window.attachEvent("mouseup", function()
-			{
-				eventBus.emit("mouseup", mouseCoords.coords);
-			}); 
+			window.attachEvent("mousemove", this.onMouseMoveEmiter);
+			window.attachEvent("mousedown", this.onMouseDownEmiter);
+			window.attachEvent("mouseup", this.onMouseUpEmiter); 
 		}
 	}
 

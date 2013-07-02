@@ -3,7 +3,13 @@ define(["addTouchEvents"], function(addTouch)
 	var touchCoords = {};
 
 	touches = {};
-		
+	
+	touchCoords.isTouchDevice= function() 
+	{
+  		return !!('ontouchstart' in window) // works on most browsers 
+      	|| !!('onmsgesturechange' in window); // works on ie10
+	};
+
 	touchCoords.onTouchMove = function(e)
 	{
 		touches[e.identifier].coords.x = e.pageX;
@@ -82,6 +88,8 @@ define(["addTouchEvents"], function(addTouch)
 
 	touchCoords.connectToEventBus=function(eventBus)
 	{
+
+		eventBus.on("isTouchDevice", this.isTouchDevice);
 		if (window.addEventListener)
 		{
 			window.addEventListener("touchstart", function(e)

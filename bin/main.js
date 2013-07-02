@@ -41,10 +41,15 @@ function(Box2D, gameLoop, game, menu, loading, Canvas, canvasParams, eventBus, m
 {
     var canvas = new Canvas(document.body, canvasParams);
 
-    mouseCoords.connectToCanvas(canvas.getDOM());
-    mouseCoords.connectToEventBus(eventBus);
-    
-    touchCoords.connectToCanvas(canvas.getDOM()).connectToEventBus(eventBus);
+    if (!touchCoords.isTouchDevice())
+    {
+        mouseCoords.connectToCanvas(canvas.getDOM());
+        mouseCoords.connectToEventBus(eventBus);
+    }
+    else
+    {
+         touchCoords.connectToCanvas(canvas.getDOM()).connectToEventBus(eventBus);
+    }
     
     var imagesManager = new ImagesManager({"SD" : "images"});
     imagesManager.pushImages(gameimages);
